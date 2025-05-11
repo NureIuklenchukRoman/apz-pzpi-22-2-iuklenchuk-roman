@@ -8,11 +8,12 @@ from app.resources.messages.resource import messages_router
 from app.resources.warehouses.resource import warehouse_router
 from app.resources.premium_services.resource import services_router
 from app.resources.humidity.resource import humidity_router
+from app.resources.backup.resource import backup_router
 
 app = FastAPI()
 
 routers = [auth_router, warehouse_router, rent_router,
-           user_router, services_router, locks_router, messages_router, humidity_router]
+           user_router, services_router, locks_router, messages_router, humidity_router, backup_router]
 
 for router in routers:
     app.include_router(router, prefix="/api")

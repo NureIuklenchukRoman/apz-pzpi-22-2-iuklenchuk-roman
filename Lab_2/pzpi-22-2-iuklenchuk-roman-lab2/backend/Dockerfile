@@ -1,6 +1,6 @@
 # Use the Python 3.11 base image
 FROM python:3.11
-RUN apt-get update && apt-get install -y curl npm
+RUN apt-get update && apt-get install -y curl npm && apt-get install -y postgresql-client
 RUN npm install -g ngrok
 # Set the working directory inside the container to /code
 WORKDIR /app

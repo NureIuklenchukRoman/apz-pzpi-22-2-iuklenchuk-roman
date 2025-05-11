@@ -5,7 +5,7 @@ from app.utils.verification import verify_password
 from sqlalchemy.orm import relationship
 from enum import Enum as PyEnum
 
-class UserRole(PyEnum):
+class UserRole(str, PyEnum):
     ADMIN = "admin"
     SELLER = "seller"
     CUSTOMER = "customer"
