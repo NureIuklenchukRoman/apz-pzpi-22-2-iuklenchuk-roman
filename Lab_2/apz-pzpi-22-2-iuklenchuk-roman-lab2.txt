@@ -1,0 +1,459 @@
+﻿Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+Кафедра програмної інженерії
+
+Звіт
+З лабораторної роботи №2
+З дисципліни «Аналіз та рефакторинг коду»
+на тему: «РОЗРОБКА БАЗИ ДАНИХ ДЛЯ СЕРВЕРНОЇ ЧАСТИНИ ПРОГРАМНОЇ СИСТЕМИ ТА ПРИКЛАДНОГО ПРОГРАМНОГО ІНТЕРФЕЙСУ (API)»
+
+Виконавець:		
+ст. гр. ПЗПІ-22-2						                    Юкленчук Р. О. 
+
+Перевірив:		
+ст. викладач кафедри ПІ				                    Сокорчук І. П. 
+	
+
+
+                                                                                                       
+
+
+
+
+
+
+
+
+Харків 2024
+1 ІСТОРІЯ ЗМІН
+
+№ДатаВерсія звітуОпис змін та виправлень101.05.20250.1Створено розділ «Завдання»202.05.20250.1Створено розділ «Опис виконаної роботи»303.05.20250.1Наповнено додатки А та Б403.05.20250.1Підбито висновки роботи503.05.20250.1Заповнено додаток В з програмним кодом
+2 ЗАВДАННЯ
+
+     Метою даного лабораторного заняття є втілення функцій бізнес логіки та функцій адміністрування системи.
+     
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+        До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А. 
+          У межах виконання проєкту було реалізовано програмну систему, орієнтовану на зручний та швидкий процес оренди складу. Основною функціональністю стала можливість пошуку, та оренди складів, перегляд аналітики по складах.
+          Крім функціонального модуля, у систему було інтегровано механізм сповіщень, який інформує користувача про кінець оренди, а також успішну оренду. Це забезпечує оперативну реакцію від користувача, наприклад він зможе вчасно подовжити оренду.
+          Також було реалізовано адміністративний функціонал, що включає можливість керування користувачами (блокування та розблокування), а також резервне копіювання бази даних. Це підвищує контроль над контентом сайту, та дає можливість блокувати шахраїв.
+          Окремо створено ролі користувачів і різний доступ для кожної ролі, наприклад адмін зможе блокувати користувачів, продавець виставляти склади на оренду, а покупець зможу орендувати склади.
+     
+ВИСНОВКИ
+
+     У результаті виконання даної лабораторної роботи було реалізовано ключові елементи бізнес-логіки програмної системи з використанням математичних методів аналізу. Окрім цього, було впроваджено функціонал сповіщення користувачів а також реалізовано повноцінні можливості адміністрування системи.
+
+
+
+
+
+
+
+
+
+
+ДОДАТОК А
+Відеозапис
+
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/fXvlOHCwtf0
+
+Хронологічний опис відеозапису: 
+00:00 Вітання 
+0:12 password reset 
+1:12 change password 
+1:55 warehouse rent 
+4:55 blocking customers 
+6:61 unblocking customers 
+7:47 seller revenue 
+9.06 database backup
+ДОДАТОК Б
+Графічні матеріали
+
+
+Рисунок Б.1 – UML Діаграма прецедентів
+
+
+Рисунок Б.2 – ER діаграма бази даних
+
+
+Рисунок Б.3 – Діаграма структури бази даних
+
+
+Рисунок Б.4 – Діаграма діяльності для бронювання складу
+
+
+Рисунок Б.5– Діаграма діяльності для аналітики по складу
+
+
+Рисунок Б.6– Діаграма діяльності бекапу БД
+
+
+
+ДОДАТОК В
+Програмний код
+
+     В.1 Математична обробка даних. Код файлу з розрахунком статистики по складу 
+	Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/warehouses/report_service.py
+
+     1  import pandas as pd
+     2  from sqlalchemy import select, func
+     3  from sqlalchemy.ext.asyncio import AsyncSession
+     4  from app.database.models import Warehouse, Rental
+     5
+     6
+     7  async def check_warehouse_owner(db, user, id):
+     8      query = select(Warehouse).filter(Warehouse.id == id)
+     9      result = await db.execute(query)
+    10      warehouse = result.scalars().first()
+    11      if warehouse.owned_by != user.id:
+    12          return False
+    13      return True
+    14
+    15
+    16  async def get_rental_data(db: AsyncSession, user):
+    17      result = await db.execute(select(Rental))
+    18      rentals = result.scalars().all()
+    19
+    20      data = []
+    21      for rental in rentals:
+    22          if await check_warehouse_owner(db, user, rental.warehouse_id):
+    23              data.append({
+    24                  "user_id": rental.user_id,
+    25                  "warehouse_id": rental.warehouse_id,
+    26                  "start_date": rental.start_date,
+    27                  "end_date": rental.end_date,
+    28                  "total_price": rental.total_price
+    29              })
+    30
+    31      df = pd.DataFrame(data)
+    32
+    33      if df.empty:
+    34          return df
+    35
+    36      df['start_date'] = pd.to_datetime(df['start_date'])
+    37      df['end_date'] = pd.to_datetime(df['end_date'])
+    38
+    39      return df
+    40
+    41
+    42  async def total_revenue(db: AsyncSession, user):
+    43      data = await get_rental_data(db, user)
+    44      if data.empty:
+    45          return 0.0
+    46      return data['total_price'].sum()
+    47
+    48
+    49  async def revenue_growth_rate(db: AsyncSession, user):
+    50      data = await get_rental_data(db, user)
+    51      if data.empty:
+    52          return 0.0
+    53
+    54      data['year'] = data['start_date'].dt.year
+    55      yearly_revenue = data.groupby('year')['total_price'].sum()
+    56      growth_rate = yearly_revenue.pct_change().fillna(0) * 100
+    57
+    58      return growth_rate.to_dict()
+    59
+    60
+    61  async def average_rental_duration(db: AsyncSession, user):
+    62      data = await get_rental_data(db, user)
+    63      if data.empty:
+    64          return 0.0
+    65      return (data['end_date'] - data['start_date']).dt.days.mean()
+    66
+    67
+    68  async def revenue_per_warehouse(db: AsyncSession, user):
+    69      data = await get_rental_data(db, user)
+    70      if data.empty:
+    71          return 0.0
+    72
+    73      revenue_per_warehouse = data.groupby(
+    74          'warehouse_id')['total_price'].sum().mean()
+    75      return revenue_per_warehouse
+    76
+    77
+    78  async def top_performing_warehouses(db: AsyncSession, user):
+    79      data = await get_rental_data(db, user)
+    80      if data.empty:
+    81          return []
+    82
+    83      top_warehouses = data.groupby('warehouse_id')[
+    84          'total_price'].sum().nlargest(5)
+    85      return top_warehouses.index.tolist()
+    86
+    87
+    88  async def generate_report(db: AsyncSession, user):
+    89      report = {
+    90          "total_revenue": await total_revenue(db, user),
+    91          "average_rental_duration": await average_rental_duration(db, user),
+    92          "revenue_per_warehouse": await revenue_per_warehouse(db, user),
+    93          "revenue_growth_rate": await revenue_growth_rate(db, user),
+    94          "top_performing_warehouses": await top_performing_warehouses(db, user),
+    95      }
+    96      return report
+
+
+     В.2 Блокування користувачів Основний код знаходится з 124 до 162 рядка.
+     Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/user/resource.py
+     
+           1  from sqlalchemy import select
+           2  from fastapi import APIRouter, Depends, HTTPException
+           3
+           4  from app.database import get_db
+           5  from app.utils.auth import Authorization
+           6  from app.resources._shared.query import update_model
+           7  from app.database.models import Warehouse, Rental, User, UserRole, Lock, RentalStatus
+           8
+           9  from .schemas import RentalResponseSchema, UserResponseSchema, UserUpdateSchema, LockResponseSchema
+          10
+          11
+          12  user_router = APIRouter(prefix="/users", tags=["users"])
+          13
+          14
+          15  @user_router.get("/my_rents", response_model=list[RentalResponseSchema])
+          16  async def get_my_rent(user=Depends(Authorization()), db=Depends(get_db)):
+          17      query = select(Rental).filter(Rental.user_id == user.id)
+          18      rental_result = await db.execute(query)
+          19      rentals = rental_result.scalars().all()
+          20
+          21      results = []
+          22      for rental in rentals:
+          23          warehouse_query = select(Warehouse).filter(
+          24              Warehouse.id == rental.warehouse_id)
+          25          warehouse_result = await db.execute(warehouse_query)
+          26          warehouse = warehouse_result.scalar_one_or_none()
+          27
+          28          results.append(
+          29              dict(
+          30                  id=rental.id,
+          31                  warehouse_name=warehouse.name,
+          32                  warehouse_location=warehouse.location,
+          33                  start_date=rental.start_date,
+          34                  end_date=rental.end_date,
+          35                  status=rental.status,
+          36                  total_price=rental.total_price
+          37              )
+          38          )
+          39
+          40      return results
+          41
+          42
+          43  @user_router.get("/my_rents/{rent_id}", response_model=RentalResponseSchema)
+          44  async def get_my_rent(rent_id: int, user=Depends(Authorization()), db=Depends(get_db)):
+          45      query = select(Rental).filter(Rental.id == rent_id)
+          46      rental_result = await db.execute(query)
+          47      rental = rental_result.scalar_one_or_none()
+          48
+          49      if not rental:
+          50          raise HTTPException(
+          51              status_code=404,
+          52              detail="Rental not found"
+          53          )
+          54
+          55      warehouse_query = select(Warehouse).filter(
+          56          Warehouse.id == rental.warehouse_id)
+          57      warehouse_result = await db.execute(warehouse_query)
+          58      warehouse = warehouse_result.scalar_one_or_none()
+          59
+          60      return dict(
+          61          id=rental.id,
+          62          warehouse_name=warehouse.name,
+          63          warehouse_location=warehouse.location,
+          64          start_date=rental.start_date,
+          65          end_date=rental.end_date,
+          66          status=rental.status,
+          67          total_price=rental.total_price
+          68      )
+          69
+          70
+          71  @user_router.get("/my_locks", response_model=list[LockResponseSchema])
+          72  async def get_my_locks(user=Depends(Authorization()), db=Depends(get_db)):
+          73      query = select(Rental).filter(Rental.user_id == user.id, Rental.status == RentalStatus.RESERVED)
+          74      rental_result = await db.execute(query)
+          75      rental = rental_result.scalars().all()
+          76      warehouse_ids = [rent.warehouse_id for rent in rental]
+          77      if not rental:
+          78          raise HTTPException(
+          79              status_code=404,
+          80              detail="Rental not found"
+          81          )
+          82
+          83      warehouse_query = select(Warehouse).filter(
+          84          Warehouse.id.in_(warehouse_ids))
+          85      warehouse_result = await db.execute(warehouse_query)
+          86      warehouse = warehouse_result.scalars().all()
+          87      warehouse_ids = [ware.id for ware in warehouse]
+          88      
+          89      lock_query = select(Lock).filter(Lock.warehouse_id.in_(warehouse_ids))
+          90      lock_result = await db.execute(lock_query)
+          91      locks = lock_result.scalars().all()
+          92
+          93      return locks
+          94
+          95
+          96  @user_router.put("/me", response_model=UserResponseSchema)
+          97  async def update_user_info(user_data: UserUpdateSchema, user=Depends(Authorization()), db=Depends(get_db)):
+          98      update_model(user, user_data.dict(exclude_unset=True))
+          99      await db.commit()
+         100      return user
+         101
+         102
+         103  @user_router.get("/me", response_model=UserResponseSchema)
+         104  async def get_user_info(user=Depends(Authorization()), db=Depends(get_db)):
+         105      return user
+         106
+         107
+         108  @user_router.get("/", response_model=list[UserResponseSchema])
+         109  async def get_all_users(db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
+         110      query = select(User)
+         111      result = await db.execute(query)
+         112      users = result.scalars().all()
+         113      return users
+         114
+         115
+         116  async def get_user_warehouses(db, user):
+         117      user_warehouses_query = select(Warehouse).filter(Warehouse.owned_by == user.id)
+         118      user_warehouses_result = await db.execute(user_warehouses_query)
+         119      user_warehouses = user_warehouses_result.scalars().all()
+         120      return user_warehouses
+         121
+         122
+         123  @user_router.get("/block_user", response_model=UserResponseSchema)
+         124  async def block_user(user_id: int, db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
+         125      query = select(User).filter(User.id == user_id)
+         126      result = await db.execute(query)
+         127      user = result.scalars().first()
+         128      
+         129      if not user:
+         130          raise HTTPException(
+         131              status_code=404,
+         132              detail="User not found"
+         133          )
+         134          
+         135      user.is_blocked = True
+         136      
+         137      user_warehouses = await get_user_warehouses(db, user)
+         138      for warehouse in user_warehouses:
+         139          warehouse.is_blocked = True
+         140      await db.commit()
+         141      return user
+         142
+         143
+         144  @user_router.get("/unblock_user", response_model=UserResponseSchema)
+         145  async def unblock_user(user_id: int, db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
+         146      query = select(User).filter(User.id == user_id)
+         147      result = await db.execute(query)
+         148      user = result.scalars().first()
+         149      
+         150      if not user:
+         151          raise HTTPException(
+         152              status_code=404,
+         153              detail="User not found"
+         154          )
+         155          
+         156      user.is_blocked = False
+         157      
+         158      user_warehouses = await get_user_warehouses(db, user)
+         159      for warehouse in user_warehouses:
+         160          warehouse.is_blocked = False
+         161      await db.commit()
+         162      return user
+      
+     В.3 Завантаження бекапу БД
+     Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/backup/resource.py
+     
+     1  from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+     2  from fastapi.responses import FileResponse
+     3  from sqlalchemy.ext.asyncio import AsyncSession
+     4  import os
+     5  import subprocess
+     6  from datetime import datetime
+     7  import os
+     8  import shutil
+     9  import subprocess
+    10
+    11
+    12  from app.database import get_db
+    13  from app.database.models import UserRole
+    14  from app.utils.auth import Authorization
+    15
+    16  backup_router = APIRouter()
+    17
+    18  @backup_router.get("/database")
+    19  async def backup_database(
+    20      db: AsyncSession = Depends(get_db),
+    21      user = Depends(Authorization(allowed_roles=[UserRole.ADMIN]))
+    22  ):
+    23      """
+    24      Create a database backup and return it as a file.
+    25      Only accessible by admin users.
+    26      """
+    27      try:
+    28          # Create backups directory if it doesn't exist
+    29          backup_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "backups")
+    30          os.makedirs(backup_dir, exist_ok=True)
+    31
+    32          # Generate backup filename with timestamp
+    33          timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    34          # Correct extension for custom format
+    35          backup_file = os.path.join(backup_dir, f"backup_{timestamp}.dump")
+    36
+    37
+    38          # Get database connection details from environment variables
+    39          db_name = os.getenv("POSTGRES_DB", "postgres")
+    40          db_user = os.getenv("POSTGRES_USER", "postgres")
+    41          db_password = os.getenv("POSTGRES_PASSWORD", "postgres")
+    42          db_host = os.getenv("POSTGRES_HOST", "localhost")
+    43          db_port = os.getenv("POSTGRES_PORT", "5432")
+    44
+    45          # Create backup using pg_dump
+    46          command = [
+    47              "pg_dump",
+    48              f"--dbname=postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}",
+    49              "-F", "c",  # Custom format
+    50              "-f", backup_file
+    51          ]
+    52
+    53          process = subprocess.Popen(
+    54              command,
+    55              stdout=subprocess.PIPE,
+    56              stderr=subprocess.PIPE
+    57          )
+    58          stdout, stderr = process.communicate()
+    59
+    60          if process.returncode != 0:
+    61              raise HTTPException(
+    62                  status_code=500,
+    63                  detail=f"Backup failed: {stderr.decode()}"
+    64              )
+    65          
+    66          # Validate backup file
+    67          validate_command = ["pg_restore", "-l", backup_file]
+    68          validate_proc = subprocess.run(
+    69              validate_command,
+    70              stdout=subprocess.PIPE,
+    71              stderr=subprocess.PIPE
+    72          )
+    73
+    74          if validate_proc.returncode != 0:
+    75              raise HTTPException(
+    76                  status_code=500,
+    77                  detail=f"Backup file validation failed: {validate_proc.stderr.decode()}"
+    78              )
+    79
+    80          # Return the backup file
+    81          return FileResponse(
+    82              backup_file,
+    83              media_type="application/octet-stream",
+    84              filename=f"backup_{timestamp}.dump"
+    85          )
+    86
+    87
+    88      except Exception as e:
+    89          raise HTTPException(
+    90              status_code=500,
+    91              detail=f"Backup failed: {str(e)}"
+    92          )
+      
