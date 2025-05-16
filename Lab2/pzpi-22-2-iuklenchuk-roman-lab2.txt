@@ -30,31 +30,7 @@
 
 1 ІСТОРІЯ ЗМІН
 
-№
-Дата
-Версія звіту
-Опис змін та виправлень
-1
-01.05.2025
-0.1
-Створено розділ «Завдання»
-2
-02.05.2025
-0.1
-Створено розділ «Опис виконаної роботи»
-3
-03.05.2025
-0.1
-Наповнено додатки А та Б
-4
-03.05.2025
-0.1
-Підбито висновки роботи
-5
-03.05.2025
-0.1
-Заповнено додаток В з програмним кодом
-
+№ДатаВерсія звітуОпис змін та виправлень101.05.20250.1Створено розділ «Завдання»202.05.20250.1Створено розділ «Опис виконаної роботи»303.05.20250.1Наповнено додатки А та Б403.05.20250.1Підбито висновки роботи503.05.20250.1Заповнено додаток В з програмним кодом
 2 ЗАВДАННЯ
 
      Метою даного лабораторного заняття є втілення функцій бізнес логіки та функцій адміністрування системи.
@@ -83,7 +59,7 @@
 ДОДАТОК А
 Відеозапис
 
-     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/fXvlOHCwtf0
+Відеозапис презентації результатів лабораторної роботи: https://www.youtube.com/watch?v=fXvlOHCwtf0
 
 Хронологічний опис відеозапису: 
 00:00 Вітання 
@@ -98,13 +74,13 @@
 Графічні матеріали
 
 
-Рисунок Б.1 – UML Діаграма прецедентів
+
+Рисунок Б.1 — ER-діаграма даних
 
 
-Рисунок Б.2 – ER діаграма бази даних
+Рисунок Б.2 — Структура бази даних
 
-
-Рисунок Б.3 – Діаграма структури бази даних
+Рисунок Б.3 — UML-діаграма прецедентів
 
 
 Рисунок Б.4 – Діаграма діяльності для бронювання складу
@@ -121,7 +97,7 @@
 Програмний код
 
      В.1 Математична обробка даних. Код файлу з розрахунком статистики по складу 
-	Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/warehouses/report_service.py
+	GitHub репозиторій:: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/warehouses/report_service.py
 
      1  import pandas as pd
      2  from sqlalchemy import select, func
@@ -222,7 +198,7 @@
 
 
      В.2 Блокування користувачів Основний код знаходится з 124 до 162 рядка.
-     Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/user/resource.py
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/user/resource.py
      
            1  from sqlalchemy import select
            2  from fastapi import APIRouter, Depends, HTTPException
@@ -388,7 +364,7 @@
          162      return user
       
      В.3 Завантаження бекапу БД
-     Github Репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/backup/resource.py
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab_2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/backup/resource.py
      
      1  from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
      2  from fastapi.responses import FileResponse
