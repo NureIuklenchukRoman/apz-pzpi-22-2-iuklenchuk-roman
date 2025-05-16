@@ -26,6 +26,7 @@ services:
       - database
     networks:
       - app-network
+    restart: always  
 
   pgadmin:
     container_name: pgadmin
