@@ -1,0 +1,197 @@
+import { useState, useEffect } from 'react';
+import {
+  Container,
+  Typography,
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  Box,
+  CircularProgress,
+  Alert,
+  Divider,
+  Avatar,
+} from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import api from '../../services/api';
+
+interface ProfileData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  address: string;
+  avatar?: string;
+}
+
+const Profile = () => {
+  const dispatch = useDispatch();
+  const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [formData, setFormData] = useState<ProfileData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+  });
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await api.get('/profile');
+      setProfile(response.data);
+      setFormData(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to fetch profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      await api.put('/profile', formData);
+      setSuccess('Profile updated successfully');
+      fetchProfile(); // Refresh profile data
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return (
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Box display="flex" alignItems="center" mb={4}>
+          <Avatar
+            src={profile?.avatar}
+            sx={{ width: 100, height: 100, mr: 3 }}
+          />
+          <Box>
+            <Typography variant="h4" component="h1">
+              {profile?.firstName} {profile?.lastName}
+            </Typography>
+            <Typography color="textSecondary">
+              {profile?.email}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {success && (
+          <Alert severity="success" sx={{ mb: 3 }}>
+            {success}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="First Name"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Last Name"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                multiline
+                rows={3}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="flex-end">
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  disabled={saving}
+                >
+                  {saving ? 'Saving...' : 'Save Changes'}
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      </Paper>
+    </Container>
+  );
+};
+
+export default Profile; 
