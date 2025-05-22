@@ -50,7 +50,7 @@ const Messages = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await api.get('/messages');
+      const response = await api.get('/messages/');
       setMessages(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch messages');
@@ -67,7 +67,7 @@ const Messages = () => {
     setError('');
 
     try {
-      await api.post('/messages', { content: newMessage });
+      await api.post('/messages/', { content: newMessage });
       setNewMessage('');
       fetchMessages(); // Refresh messages after sending
     } catch (err: any) {
@@ -96,68 +96,62 @@ const Messages = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ height: 'calc(100vh - 200px)', display: 'flex', flexDirection: 'column' }}>
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography variant="h5" component="h1">
-            Messages
-          </Typography>
-        </Box>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Messages
+      </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mx: 2, mt: 2 }}>
-            {error}
-          </Alert>
-        )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
-        <List sx={{ flex: 1, overflow: 'auto', p: 2 }}>
-          {messages.map((message) => (
-            <ListItem
-              key={message.id}
-              alignItems="flex-start"
-              sx={{
-                flexDirection: message.senderId === 'current-user' ? 'row-reverse' : 'row',
-                mb: 2,
-              }}
-            >
-              <ListItemAvatar>
-                <Avatar src={message.senderAvatar} />
-              </ListItemAvatar>
-              <Paper
-                elevation={1}
-                sx={{
-                  p: 2,
-                  maxWidth: '70%',
-                  backgroundColor: message.senderId === 'current-user' ? 'primary.light' : 'grey.100',
-                  color: message.senderId === 'current-user' ? 'white' : 'text.primary',
-                }}
-              >
-                <Typography variant="subtitle2" gutterBottom>
-                  {message.senderName}
-                </Typography>
-                <Typography variant="body1">
-                  {message.content}
-                </Typography>
-                <Typography variant="caption" sx={{ display: 'block', mt: 1, opacity: 0.7 }}>
-                  {formatTimestamp(message.timestamp)}
-                </Typography>
-              </Paper>
-            </ListItem>
+      <Paper sx={{ p: 2, mb: 3, maxHeight: '60vh', overflow: 'auto' }}>
+        <List>
+          {messages.map((message, index) => (
+            <div key={message.id}>
+              <ListItem alignItems="flex-start">
+                <ListItemAvatar>
+                  <Avatar src={message.senderAvatar}>
+                    {message.senderName.charAt(0)}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText
+                  primary={
+                    <Typography component="span" variant="subtitle1">
+                      {message.senderName}
+                    </Typography>
+                  }
+                  secondary={
+                    <>
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.primary"
+                        sx={{ display: 'block' }}
+                      >
+                        {message.content}
+                      </Typography>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text.secondary"
+                      >
+                        {formatTimestamp(message.timestamp)}
+                      </Typography>
+                    </>
+                  }
+                />
+              </ListItem>
+              {index < messages.length - 1 && <Divider variant="inset" component="li" />}
+            </div>
           ))}
           <div ref={messagesEndRef} />
         </List>
+      </Paper>
 
-        <Divider />
-
-        <Box
-          component="form"
-          onSubmit={handleSendMessage}
-          sx={{
-            p: 2,
-            backgroundColor: 'background.paper',
-            display: 'flex',
-            gap: 1,
-          }}
-        >
+      <Paper component="form" onSubmit={handleSendMessage} sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
             fullWidth
             variant="outlined"
@@ -165,15 +159,16 @@ const Messages = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             disabled={sending}
-            size="small"
           />
-          <IconButton
-            color="primary"
+          <Button
             type="submit"
+            variant="contained"
+            color="primary"
             disabled={sending || !newMessage.trim()}
+            endIcon={<SendIcon />}
           >
-            <SendIcon />
-          </IconButton>
+            Send
+          </Button>
         </Box>
       </Paper>
     </Container>

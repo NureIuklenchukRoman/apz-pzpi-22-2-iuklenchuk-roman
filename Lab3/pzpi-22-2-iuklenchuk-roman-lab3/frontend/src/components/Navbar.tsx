@@ -22,6 +22,12 @@ const Navbar = () => {
         <Box>
           {user ? (
             <>
+              <Button color="inherit" onClick={() => navigate('/')}>Dashboard</Button>
+              <Button color="inherit" onClick={() => navigate('/warehouses')}>Warehouses</Button>
+              <Button color="inherit" onClick={() => navigate('/rentals')}>Rentals</Button>
+              <Button color="inherit" onClick={() => navigate('/services')}>Services</Button>
+              <Button color="inherit" onClick={() => navigate('/messages')}>Messages</Button>
+              <Button color="inherit" onClick={() => navigate('/profile')}>Profile</Button>
               <Typography component="span" sx={{ mr: 2 }}>
                 {user.username}
               </Typography>

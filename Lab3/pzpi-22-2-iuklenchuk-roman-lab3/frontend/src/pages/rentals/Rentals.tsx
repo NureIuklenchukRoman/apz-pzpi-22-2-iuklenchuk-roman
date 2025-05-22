@@ -37,7 +37,7 @@ const Rentals = () => {
 
   const fetchRentals = async () => {
     try {
-      const response = await api.get('/rentals');
+      const response = await api.get('/users/my_rents/');
       setRentals(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch rentals');
@@ -82,43 +82,36 @@ const Rentals = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-        <Typography variant="h4" component="h1">
-          My Rentals
-        </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate('/warehouses')}
-        >
-          Rent New Warehouse
-        </Button>
-      </Box>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        My Rentals
+      </Typography>
 
       <Grid container spacing={3}>
         {rentals.map((rental) => (
-          <Grid item xs={12} key={rental.id}>
+          <Grid item xs={12} md={6} key={rental.id}>
             <Card>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                  <Box>
-                    <Typography variant="h6" component="h2">
-                      {rental.warehouseName}
-                    </Typography>
-                    <Typography color="textSecondary" gutterBottom>
-                      Rental Period: {new Date(rental.startDate).toLocaleDateString()} - {new Date(rental.endDate).toLocaleDateString()}
-                    </Typography>
-                    <Typography variant="h6" color="primary" sx={{ mt: 1 }}>
-                      ${rental.totalAmount}
-                    </Typography>
-                  </Box>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  {rental.warehouseName}
+                </Typography>
+                <Box sx={{ mb: 2 }}>
                   <Chip
-                    label={rental.status.charAt(0).toUpperCase() + rental.status.slice(1)}
+                    label={rental.status.toUpperCase()}
                     color={getStatusColor(rental.status)}
-                    sx={{ ml: 2 }}
+                    size="small"
+                    sx={{ mr: 1 }}
                   />
                 </Box>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Start Date: {new Date(rental.startDate).toLocaleDateString()}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  End Date: {new Date(rental.endDate).toLocaleDateString()}
+                </Typography>
+                <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
+                  Total: ${rental.totalAmount}
+                </Typography>
               </CardContent>
               <CardActions>
                 <Button
@@ -132,13 +125,6 @@ const Rentals = () => {
             </Card>
           </Grid>
         ))}
-        {rentals.length === 0 && (
-          <Grid item xs={12}>
-            <Alert severity="info">
-              You don't have any rentals yet. Click the "Rent New Warehouse" button to get started.
-            </Alert>
-          </Grid>
-        )}
       </Grid>
     </Container>
   );

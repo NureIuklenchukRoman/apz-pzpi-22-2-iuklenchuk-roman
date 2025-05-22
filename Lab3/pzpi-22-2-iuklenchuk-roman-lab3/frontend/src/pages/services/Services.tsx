@@ -43,7 +43,7 @@ const Services = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get('/services');
+      const response = await api.get('/premium_services/');
       setServices(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch services');
@@ -71,7 +71,7 @@ const Services = () => {
     setSuccess('');
 
     try {
-      await api.post('/service-requests', {
+      await api.post('/premium_services/request/', {
         serviceId: selectedService.id,
         note: requestNote,
       });
@@ -93,9 +93,9 @@ const Services = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Available Services
+        Premium Services
       </Typography>
 
       {error && (
@@ -118,17 +118,17 @@ const Services = () => {
                 <Typography variant="h6" component="h2" gutterBottom>
                   {service.name}
                 </Typography>
-                <Typography color="textSecondary" gutterBottom>
-                  {service.category}
-                </Typography>
-                <Typography variant="body2" paragraph>
+                <Typography variant="body2" color="text.secondary" paragraph>
                   {service.description}
                 </Typography>
-                <Typography variant="body2" color="textSecondary">
+                <Typography variant="h6" color="primary">
+                  ${service.price}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
                   Duration: {service.duration}
                 </Typography>
-                <Typography variant="h6" color="primary" sx={{ mt: 1 }}>
-                  ${service.price}
+                <Typography variant="body2" color="text.secondary">
+                  Category: {service.category}
                 </Typography>
               </CardContent>
               <CardActions>
@@ -146,34 +146,30 @@ const Services = () => {
       </Grid>
 
       <Dialog open={requestDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>
-          Request Service: {selectedService?.name}
-        </DialogTitle>
+        <DialogTitle>Request Service</DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 2 }}>
-            <Typography variant="body1" gutterBottom>
-              Please provide any additional notes or requirements for this service:
-            </Typography>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              value={requestNote}
-              onChange={(e) => setRequestNote(e.target.value)}
-              placeholder="Enter your notes here..."
-              sx={{ mt: 2 }}
-            />
-          </Box>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Additional Notes"
+            fullWidth
+            multiline
+            rows={4}
+            value={requestNote}
+            onChange={(e) => setRequestNote(e.target.value)}
+            disabled={submitting}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button onClick={handleCloseDialog} disabled={submitting}>
+            Cancel
+          </Button>
           <Button
             onClick={handleSubmitRequest}
-            variant="contained"
             color="primary"
-            disabled={submitting}
+            disabled={submitting || !selectedService}
           >
-            {submitting ? 'Submitting...' : 'Submit Request'}
+            Submit Request
           </Button>
         </DialogActions>
       </Dialog>

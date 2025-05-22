@@ -20,7 +20,7 @@ ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 REFRESH_TOKEN_EXPIRE_MINUTES = int(os.getenv("REFRESH_TOKEN_EXPIRE_MINUTES"))
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/login")
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -63,7 +63,7 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
     return {"msg": "User created successfully", "user": new_user}
 
 
-@auth_router.post("/token", response_model=Token)
+@auth_router.post("/login", response_model=Token)
 async def login(db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     user = await authenticate_user(form_data.username, form_data.password, db)
     if not user:

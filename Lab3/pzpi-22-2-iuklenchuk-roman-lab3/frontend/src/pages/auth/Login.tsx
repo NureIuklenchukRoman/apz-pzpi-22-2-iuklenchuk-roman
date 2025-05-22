@@ -27,8 +27,27 @@ const Login = () => {
     dispatch(loginStart());
 
     try {
-      const response = await api.post('/auth/login', { email, password });
-      dispatch(loginSuccess(response.data));
+      const formData = new URLSearchParams();
+      formData.append('username', email); // важливо: ключ — `username`, бо FastAPI очікує саме його
+      formData.append('password', password);
+      console.log("response");
+
+      const response = await api.post('/auth/login', formData, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      });
+      
+      // Store the token
+      localStorage.setItem('token', response.data.access_token);
+      
+      // Create user object from the token payload
+      const tokenPayload = JSON.parse(atob(response.data.access_token.split('.')[1]));
+      const user = {
+        id: tokenPayload.sub,
+        email: tokenPayload.sub,
+        username: tokenPayload.sub.split('@')[0]
+      };
+
+      dispatch(loginSuccess({ user, token: response.data.access_token }));
       navigate('/');
     } catch (err: any) {
       dispatch(loginFailure(err.response?.data?.message || 'Login failed'));
@@ -36,13 +55,25 @@ const Login = () => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container 
+      component="main" 
+      maxWidth="lg" 
+      sx={{ 
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh'
+      }}
+    >
       <Box
         sx={{
-          marginTop: 8,
+          width: '100%',
+          maxWidth: '1200px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <Paper
@@ -53,6 +84,7 @@ const Login = () => {
             flexDirection: 'column',
             alignItems: 'center',
             width: '100%',
+            maxWidth: '400px',
           }}
         >
           <Typography component="h1" variant="h5">

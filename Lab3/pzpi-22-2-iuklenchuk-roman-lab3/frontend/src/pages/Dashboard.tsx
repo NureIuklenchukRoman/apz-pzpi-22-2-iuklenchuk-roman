@@ -28,8 +28,27 @@ const Dashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const response = await api.get('/dashboard/stats');
-      setStats(response.data);
+      // Fetch warehouses count
+      const warehousesResponse = await api.get('/warehouses');
+      const warehouses = warehousesResponse.data;
+      
+      // Fetch rentals count
+      const rentalsResponse = await api.get('/users/my_rents');
+      const rentals = rentalsResponse.data;
+      
+      // Fetch messages count
+      const messagesResponse = await api.get('/messages');
+      const messages = messagesResponse.data;
+      
+      // Calculate stats
+      const stats = {
+        totalWarehouses: warehouses.length,
+        activeRentals: rentals.filter((r: any) => r.status === 'active').length,
+        pendingServices: 0, // This endpoint doesn't exist yet
+        unreadMessages: messages.filter((m: any) => !m.isRead).length,
+      };
+      
+      setStats(stats);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch dashboard stats');
     } finally {
@@ -59,14 +78,7 @@ const Dashboard = () => {
 
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
               Total Warehouses
             </Typography>
@@ -76,14 +88,7 @@ const Dashboard = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
               Active Rentals
             </Typography>
@@ -93,14 +98,7 @@ const Dashboard = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
               Pending Services
             </Typography>
@@ -110,14 +108,7 @@ const Dashboard = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Paper
-            sx={{
-              p: 2,
-              display: 'flex',
-              flexDirection: 'column',
-              height: 140,
-            }}
-          >
+          <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
             <Typography component="h2" variant="h6" color="primary" gutterBottom>
               Unread Messages
             </Typography>

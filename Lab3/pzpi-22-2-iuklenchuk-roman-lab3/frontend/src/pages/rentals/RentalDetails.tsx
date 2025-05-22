@@ -51,7 +51,7 @@ const RentalDetails = () => {
 
   const fetchRentalDetails = async () => {
     try {
-      const response = await api.get(`/rentals/${id}`);
+      const response = await api.get(`/users/my_rents/${id}`);
       setRental(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch rental details');

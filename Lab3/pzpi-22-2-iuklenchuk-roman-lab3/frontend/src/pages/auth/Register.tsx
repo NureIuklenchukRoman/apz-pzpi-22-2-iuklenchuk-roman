@@ -52,6 +52,7 @@ const Register = () => {
       });
 
       dispatch(loginSuccess(response.data));
+      localStorage.setItem('token', response.data.token);
       navigate('/');
     } catch (err: any) {
       if (err.response?.data?.detail) {

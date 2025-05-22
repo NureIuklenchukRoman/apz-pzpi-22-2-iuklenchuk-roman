@@ -28,7 +28,6 @@ interface Warehouse {
   description: string;
   capacity: number;
   availableSpace: number;
-  price: number;
   features: string[];
   contactPhone: string;
   contactEmail: string;
@@ -48,7 +47,7 @@ const WarehouseDetails = () => {
 
   const fetchWarehouseDetails = async () => {
     try {
-      const response = await api.get(`/warehouses/${id}`);
+      const response = await api.get(`/warehouses/${id}/`);
       setWarehouse(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch warehouse details');
@@ -92,87 +91,93 @@ const WarehouseDetails = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-          <Typography variant="h4" component="h1">
-            {warehouse.name}
-          </Typography>
-          <Chip
-            label={warehouse.status.charAt(0).toUpperCase() + warehouse.status.slice(1)}
-            color={getStatusColor(warehouse.status)}
-          />
-        </Box>
+      <Typography variant="h4" component="h1" gutterBottom>
+        {warehouse.name}
+      </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={8}>
+      <Grid container spacing={3}>
+        <Grid xs={12} md={8}>
+          <Paper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               Description
             </Typography>
-            <Typography paragraph>{warehouse.description}</Typography>
+            <Typography paragraph>
+              {warehouse.description}
+            </Typography>
 
-            <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+            <Divider sx={{ my: 3 }} />
+
+            <Typography variant="h6" gutterBottom>
               Features
             </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
               {warehouse.features.map((feature, index) => (
                 <Chip key={index} label={feature} />
               ))}
             </Box>
-          </Grid>
 
-          <Grid item xs={12} md={4}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Details
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <LocationIcon sx={{ mr: 1 }} />
+            <Divider sx={{ my: 3 }} />
+
+            <Typography variant="h6" gutterBottom>
+              Contact Information
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <PhoneIcon color="action" />
+                <Typography>{warehouse.contactPhone}</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <EmailIcon color="action" />
+                <Typography>{warehouse.contactEmail}</Typography>
+              </Box>
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid xs={12} md={4}>
+          <Paper sx={{ p: 3 }}>
+            <Box sx={{ mb: 3 }}>
+              <Chip
+                label={warehouse.status.toUpperCase()}
+                color={getStatusColor(warehouse.status)}
+                sx={{ mb: 2 }}
+              />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <LocationIcon color="action" />
                 <Typography>{warehouse.location}</Typography>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <StorageIcon sx={{ mr: 1 }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                <StorageIcon color="action" />
                 <Typography>
-                  {warehouse.availableSpace} / {warehouse.capacity} m² available
+                  Available Space: {warehouse.availableSpace} sqm
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <MoneyIcon sx={{ mr: 1 }} />
-                <Typography>${warehouse.price}/month</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <MoneyIcon color="action" />
+                <Typography>
+                  Total Capacity: {warehouse.capacity} sqm
+                </Typography>
               </Box>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="subtitle2" gutterBottom>
-                Contact Information
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <PhoneIcon sx={{ mr: 1, fontSize: 'small' }} />
-                <Typography variant="body2">{warehouse.contactPhone}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <EmailIcon sx={{ mr: 1, fontSize: 'small' }} />
-                <Typography variant="body2">{warehouse.contactEmail}</Typography>
-              </Box>
-            </Paper>
+            </Box>
 
             <Button
               variant="contained"
               color="primary"
               fullWidth
-              size="large"
-              sx={{ mt: 3 }}
               onClick={handleRent}
               disabled={warehouse.status !== 'available'}
             >
               {warehouse.status === 'available' ? 'Rent Now' : 'Not Available'}
             </Button>
-          </Grid>
+          </Paper>
         </Grid>
-      </Paper>
+      </Grid>
     </Container>
   );
 };

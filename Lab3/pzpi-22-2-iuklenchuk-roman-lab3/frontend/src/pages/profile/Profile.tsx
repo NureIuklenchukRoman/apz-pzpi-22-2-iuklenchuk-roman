@@ -45,7 +45,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const response = await api.get('/profile');
+      const response = await api.get('/users/me/');
       setProfile(response.data);
       setFormData(response.data);
     } catch (err: any) {
@@ -70,7 +70,7 @@ const Profile = () => {
     setSuccess('');
 
     try {
-      await api.put('/profile', formData);
+      await api.put('/users/me/', formData);
       setSuccess('Profile updated successfully');
       fetchProfile(); // Refresh profile data
     } catch (err: any) {
@@ -89,38 +89,44 @@ const Profile = () => {
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Box display="flex" alignItems="center" mb={4}>
+    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Profile
+      </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+
+      {success && (
+        <Alert severity="success" sx={{ mb: 3 }}>
+          {success}
+        </Alert>
+      )}
+
+      <Paper sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
           <Avatar
             src={profile?.avatar}
             sx={{ width: 100, height: 100, mr: 3 }}
-          />
+          >
+            {profile?.firstName?.charAt(0)}
+          </Avatar>
           <Box>
-            <Typography variant="h4" component="h1">
+            <Typography variant="h5">
               {profile?.firstName} {profile?.lastName}
             </Typography>
-            <Typography color="textSecondary">
+            <Typography color="text.secondary">
               {profile?.email}
             </Typography>
           </Box>
         </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider sx={{ mb: 3 }} />
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            {success}
-          </Alert>
-        )}
-
-        <Box component="form" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -129,7 +135,7 @@ const Profile = () => {
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                required
+                disabled={saving}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -139,7 +145,7 @@ const Profile = () => {
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                required
+                disabled={saving}
               />
             </Grid>
             <Grid item xs={12}>
@@ -150,7 +156,7 @@ const Profile = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                required
+                disabled={saving}
               />
             </Grid>
             <Grid item xs={12}>
@@ -160,7 +166,7 @@ const Profile = () => {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                required
+                disabled={saving}
               />
             </Grid>
             <Grid item xs={12}>
@@ -170,25 +176,22 @@ const Profile = () => {
                 name="address"
                 value={formData.address}
                 onChange={handleChange}
-                multiline
-                rows={3}
+                disabled={saving}
               />
             </Grid>
             <Grid item xs={12}>
-              <Box display="flex" justifyContent="flex-end">
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  disabled={saving}
-                >
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </Button>
-              </Box>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={saving}
+                sx={{ mt: 2 }}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </Button>
             </Grid>
           </Grid>
-        </Box>
+        </form>
       </Paper>
     </Container>
   );

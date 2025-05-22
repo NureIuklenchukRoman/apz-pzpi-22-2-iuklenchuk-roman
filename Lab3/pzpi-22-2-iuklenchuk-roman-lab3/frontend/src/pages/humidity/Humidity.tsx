@@ -51,7 +51,7 @@ const Humidity = () => {
 
   const fetchHumidityData = async () => {
     try {
-      const response = await api.get('/humidity');
+      const response = await api.get('/humidity/');
       setHumidityData(response.data);
       if (response.data.length > 0 && !selectedWarehouse) {
         setSelectedWarehouse(response.data[0].id);
@@ -74,7 +74,7 @@ const Humidity = () => {
     setError('');
 
     try {
-      await api.put(`/humidity/${selectedWarehouse}`, {
+      await api.put(`/humidity/${selectedWarehouse}/`, {
         targetHumidity: value,
       });
       fetchHumidityData(); // Refresh data after update
@@ -107,7 +107,7 @@ const Humidity = () => {
       case 'critical':
         return <WarningIcon color="error" />;
       default:
-        return null;
+        return <WaterDropIcon />;
     }
   };
 
@@ -120,105 +120,53 @@ const Humidity = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant="h4" component="h1" gutterBottom sx={{ width: '100%' }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Typography variant="h4" component="h1" gutterBottom>
         Humidity Monitoring
       </Typography>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3, width: '100%' }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {error}
         </Alert>
       )}
 
-      <Grid container spacing={3} sx={{ width: '100%' }}>
-        <Grid item xs={12} md={4}>
-          <Paper sx={{ p: 3, height: '100%' }}>
-            <Typography variant="h6" gutterBottom>
-              Warehouse Selection
-            </Typography>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>Select Warehouse</InputLabel>
-              <Select
-                value={selectedWarehouse}
-                label="Select Warehouse"
-                onChange={handleWarehouseChange}
-              >
-                {humidityData.map((data) => (
-                  <MenuItem key={data.id} value={data.id}>
+      <Grid container spacing={3}>
+        {humidityData.map((data) => (
+          <Grid item xs={12} md={6} key={data.id}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  {getStatusIcon(data.status)}
+                  <Typography variant="h6" component="h2" sx={{ ml: 1 }}>
                     {data.warehouseName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
-            {selectedWarehouse && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Target Humidity
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Current Humidity: {data.currentHumidity}%
                 </Typography>
-                <Slider
-                  value={humidityData.find(d => d.id === selectedWarehouse)?.targetHumidity || 50}
-                  onChange={(_, value) => handleTargetHumidityChange(value as number)}
-                  min={30}
-                  max={70}
-                  step={1}
-                  marks={[
-                    { value: 30, label: '30%' },
-                    { value: 50, label: '50%' },
-                    { value: 70, label: '70%' },
-                  ]}
-                  disabled={updating}
-                />
-              </Box>
-            )}
-          </Paper>
-        </Grid>
-
-        <Grid item xs={12} md={8}>
-          <Grid container spacing={2}>
-            {humidityData.map((data) => (
-              <Grid item xs={12} sm={6} key={data.id}>
-                <Card>
-                  <CardContent>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                      <WaterDropIcon sx={{ mr: 1 }} />
-                      <Typography variant="h6" component="div">
-                        {data.warehouseName}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-                        Current Humidity:
-                      </Typography>
-                      <Typography
-                        variant="body1"
-                        sx={{ color: getStatusColor(data.status) }}
-                      >
-                        {data.currentHumidity}%
-                      </Typography>
-                      {getStatusIcon(data.status)}
-                    </Box>
-                    <Typography variant="body2" color="text.secondary">
-                      Target: {data.targetHumidity}%
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
-                      Last updated: {new Date(data.lastUpdated).toLocaleString()}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      onClick={() => setSelectedWarehouse(data.id)}
-                    >
-                      Adjust Settings
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  Target Humidity: {data.targetHumidity}%
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Last Updated: {new Date(data.lastUpdated).toLocaleString()}
+                </Typography>
+                <Box sx={{ mt: 2 }}>
+                  <Typography gutterBottom>Adjust Target Humidity</Typography>
+                  <Slider
+                    value={data.targetHumidity}
+                    onChange={(_, value) => handleTargetHumidityChange(value as number)}
+                    min={0}
+                    max={100}
+                    disabled={updating}
+                    valueLabelDisplay="auto"
+                    valueLabelFormat={(value) => `${value}%`}
+                  />
+                </Box>
+              </CardContent>
+            </Card>
           </Grid>
-        </Grid>
+        ))}
       </Grid>
     </Container>
   );
