@@ -18,6 +18,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import api from '../../services/api';
+import { useTranslation } from 'react-i18next';
 
 interface Warehouse {
   id: number;
@@ -35,6 +36,7 @@ interface PremiumService {
 }
 
 const NewRental = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const warehouseId = searchParams.get('warehouseId');
   const navigate = useNavigate();
@@ -129,8 +131,8 @@ const NewRental = () => {
   return (
     <Container maxWidth="sm" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Rent Warehouse
+        <Typography variant="h5" component="h1" align="center" gutterBottom>
+          {t('new_rental')}
         </Typography>
 
         <Typography variant="h6" gutterBottom>
@@ -153,7 +155,7 @@ const NewRental = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box sx={{ mb: 3 }}>
               <DatePicker
-                label="Start Date"
+                label={t('start_date')}
                 value={startDate}
                 onChange={(newValue) => setStartDate(newValue)}
                 minDate={new Date()}
@@ -168,7 +170,7 @@ const NewRental = () => {
 
             <Box sx={{ mb: 3 }}>
               <DatePicker
-                label="End Date"
+                label={t('end_date')}
                 value={endDate}
                 onChange={(newValue) => setEndDate(newValue)}
                 minDate={startDate || new Date()}
@@ -186,7 +188,7 @@ const NewRental = () => {
             <>
               <Divider sx={{ my: 3 }} />
               <Typography variant="h6" gutterBottom>
-                Premium Services
+                {t('premium_services')}
               </Typography>
               <FormGroup>
                 {services.map((service) => (
@@ -223,7 +225,7 @@ const NewRental = () => {
             disabled={submitting || !startDate || !endDate}
             sx={{ mt: 3 }}
           >
-            {submitting ? 'Creating Rental...' : 'Create Rental'}
+            {submitting ? t('creating_rental') : t('create_rental')}
           </Button>
         </Box>
       </Paper>

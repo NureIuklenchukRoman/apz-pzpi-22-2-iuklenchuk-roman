@@ -37,6 +37,7 @@ import {
   AccountBalance as AccountBalanceIcon,
   CalendarToday as CalendarTodayIcon,
 } from '@mui/icons-material';
+import { useTranslation } from 'react-i18next';
 
 interface RevenueData {
   total_revenue: number;
@@ -64,6 +65,7 @@ const Revenue = () => {
   const [error, setError] = useState('');
   const [timeRange, setTimeRange] = useState('month');
   const { user } = useSelector((state: RootState) => state.auth);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchRevenueData();
@@ -84,7 +86,7 @@ const Revenue = () => {
     return (
       <Container maxWidth="sm">
         <Alert severity="error" sx={{ mt: 4 }}>
-          Access denied. Only sellers can view revenue data.
+          {t('access_denied')}
         </Alert>
       </Container>
     );
@@ -102,7 +104,7 @@ const Revenue = () => {
     return (
       <Container maxWidth="sm">
         <Alert severity="error" sx={{ mt: 4 }}>
-          No revenue data available.
+          {t('no_revenue_data')}
         </Alert>
       </Container>
     );
@@ -112,18 +114,18 @@ const Revenue = () => {
     <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" component="h1">
-          Revenue Analytics
+          {t('revenue_analytics')}
         </Typography>
         <FormControl sx={{ minWidth: 120 }}>
-          <InputLabel>Time Range</InputLabel>
+          <InputLabel>{t('time_range')}</InputLabel>
           <Select
             value={timeRange}
-            label="Time Range"
+            label={t('time_range')}
             onChange={(e) => setTimeRange(e.target.value)}
           >
-            <MenuItem value="week">Last Week</MenuItem>
-            <MenuItem value="month">Last Month</MenuItem>
-            <MenuItem value="year">Last Year</MenuItem>
+            <MenuItem value="week">{t('last_week')}</MenuItem>
+            <MenuItem value="month">{t('last_month')}</MenuItem>
+            <MenuItem value="year">{t('last_year')}</MenuItem>
           </Select>
         </FormControl>
       </Box>
@@ -142,7 +144,7 @@ const Revenue = () => {
                 <AccountBalanceIcon color="primary" sx={{ fontSize: 40 }} />
                 <Box>
                   <Typography variant="h6" color="text.secondary">
-                    Total Revenue
+                    {t('total_revenue')}
                   </Typography>
                   <Typography variant="h4" color="primary">
                     ${revenueData.total_revenue.toFixed(2)}
@@ -159,7 +161,7 @@ const Revenue = () => {
                 <TrendingUpIcon color="primary" sx={{ fontSize: 40 }} />
                 <Box>
                   <Typography variant="h6" color="text.secondary">
-                    Monthly Revenue
+                    {t('monthly_revenue')}
                   </Typography>
                   <Typography variant="h4" color="primary">
                     ${revenueData.monthly_revenue.toFixed(2)}
@@ -176,7 +178,7 @@ const Revenue = () => {
                 <CalendarTodayIcon color="primary" sx={{ fontSize: 40 }} />
                 <Box>
                   <Typography variant="h6" color="text.secondary">
-                    Active Rentals
+                    {t('active_rentals')}
                   </Typography>
                   <Typography variant="h4" color="primary">
                     {revenueData.active_rentals}
@@ -192,16 +194,16 @@ const Revenue = () => {
         <Grid item xs={12}>
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>
-              Revenue Over Time
+              {t('revenue_over_time')}
             </Typography>
             <Box sx={{ height: 400 }}>
               {revenueData.revenue_by_month.length === 0 ? (
                 <Box display="flex" alignItems="center" justifyContent="center" height="100%">
-                  <Typography color="text.secondary">No data available</Typography>
+                  <Typography color="text.secondary">{t('no_data_available')}</Typography>
                 </Box>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={revenueData.revenue_by_month.toFixed(2)}>
+                  <LineChart data={revenueData.revenue_by_month}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" />
                     <YAxis />
@@ -211,7 +213,7 @@ const Revenue = () => {
                       type="monotone"
                       dataKey="revenue"
                       stroke="#8884d8"
-                      name="Revenue"
+                      name={t('total_revenue')}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -222,18 +224,18 @@ const Revenue = () => {
         <Grid item xs={12}>
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>
-              Revenue by Service
+              {t('revenue_by_service')}
             </Typography>
             <Box sx={{ height: 400 }}>
               {revenueData.revenue_by_service.length === 0 ? (
                 <Box display="flex" alignItems="center" justifyContent="center" height="100%">
-                  <Typography color="text.secondary">No data available</Typography>
+                  <Typography color="text.secondary">{t('no_data_available')}</Typography>
                 </Box>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={revenueData.revenue_by_service.toFixed(2)}
+                      data={revenueData.revenue_by_service}
                       dataKey="revenue"
                       nameKey="service_name"
                       cx="50%"
@@ -256,22 +258,22 @@ const Revenue = () => {
         <Grid item xs={12}>
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>
-              Revenue by Warehouse
+              {t('revenue_by_warehouse')}
             </Typography>
             <Box sx={{ height: 400 }}>
               {revenueData.revenue_by_warehouse.length === 0 ? (
                 <Box display="flex" alignItems="center" justifyContent="center" height="100%">
-                  <Typography color="text.secondary">No data available</Typography>
+                  <Typography color="text.secondary">{t('no_data_available')}</Typography>
                 </Box>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={revenueData.revenue_by_warehouse.toFixed(2)}>
+                  <BarChart data={revenueData.revenue_by_warehouse}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="warehouse_name" />
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="revenue" fill="#8884d8" name="Revenue" />
+                    <Bar dataKey="revenue" fill="#8884d8" name={t('total_revenue')} />
                   </BarChart>
                 </ResponsiveContainer>
               )}

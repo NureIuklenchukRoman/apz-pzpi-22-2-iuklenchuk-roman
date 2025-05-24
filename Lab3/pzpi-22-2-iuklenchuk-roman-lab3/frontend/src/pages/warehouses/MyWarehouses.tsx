@@ -23,6 +23,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import api from '../../services/api';
+import { useTranslation } from 'react-i18next';
 
 interface Warehouse {
   id: number;
@@ -44,6 +45,7 @@ interface Filters {
 }
 
 const MyWarehouses = () => {
+  const { t } = useTranslation();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [filteredWarehouses, setFilteredWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ const MyWarehouses = () => {
       const response = await api.get('/warehouses/my-warehouses');
       setWarehouses(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch warehouses');
+      setError(err.response?.data?.message || t('warehouses_fetch_failed'));
     } finally {
       setLoading(false);
     }
@@ -131,7 +133,7 @@ const MyWarehouses = () => {
     return (
       <Container maxWidth="sm">
         <Alert severity="error" sx={{ mt: 4 }}>
-          Access denied. Only sellers can view their warehouses.
+          {t('access_denied_seller_warehouses')}
         </Alert>
       </Container>
     );
@@ -149,7 +151,7 @@ const MyWarehouses = () => {
     <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" component="h1">
-          My Warehouses
+          {t('my_warehouses')}
         </Typography>
         <Box>
           <Button
@@ -158,10 +160,10 @@ const MyWarehouses = () => {
             onClick={() => setShowFilters(!showFilters)}
             sx={{ mr: 2 }}
           >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            {showFilters ? t('hide_filters') : t('show_filters')}
           </Button>
           <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
-            Create Warehouse
+            {t('create_warehouse')}
           </Button>
         </Box>
       </Box>
@@ -172,7 +174,7 @@ const MyWarehouses = () => {
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
-                label="Name"
+                label={t('warehouse_name')}
                 value={filters.name}
                 onChange={(e) => handleFilterChange('name', e.target.value)}
               />
@@ -180,13 +182,13 @@ const MyWarehouses = () => {
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
-                label="Location"
+                label={t('location')}
                 value={filters.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Typography gutterBottom>Price Range</Typography>
+              <Typography gutterBottom>{t('price_range')}</Typography>
               <Slider
                 value={[filters.minPrice, filters.maxPrice]}
                 onChange={(_, value) => {
@@ -200,7 +202,7 @@ const MyWarehouses = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Typography gutterBottom>Size Range (m²)</Typography>
+              <Typography gutterBottom>{t('size_range')}</Typography>
               <Slider
                 value={[filters.minSize, filters.maxSize]}
                 onChange={(_, value) => {
@@ -218,37 +220,33 @@ const MyWarehouses = () => {
                 control={
                   <Switch
                     checked={filters.showBlocked}
-                    onChange={(e) => handleFilterChange('showBlocked', e.target.checked)}
+                    onChange={(_, checked) => handleFilterChange('showBlocked', checked)}
                   />
                 }
-                label="Show Blocked Warehouses"
+                label={t('show_blocked_warehouses')}
               />
             </Grid>
           </Grid>
         </Paper>
       )}
 
-      {error ? (
-        <Alert severity="error">{error}</Alert>
-      ) : (
-        <Grid container spacing={4} justifyContent="center">
-          {filteredWarehouses.map((warehouse) => (
-            <Box key={warehouse.id} sx={{ width: { xs: '100%', sm: '48%', md: '31%', lg: '23%' }, mb: 3 }}>
-              <Card
-                sx={{
-                  height: '100%',
-                  borderRadius: 3,
-                  boxShadow: 3,
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-6px) scale(1.03)',
-                    boxShadow: 6,
-                  },
-                  display: 'flex',
-                  flexDirection: 'column',
-                  border: warehouse.is_blocked ? '2px solid #ff6b6b' : 'none',
-                }}
-              >
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      <Grid container spacing={3}>
+        {filteredWarehouses.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography align="center" color="text.secondary">
+              {t('no_warehouses_found')}
+            </Typography>
+          </Grid>
+        ) : (
+          filteredWarehouses.map((warehouse) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={warehouse.id}>
+              <Card>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} gutterBottom>
                     {warehouse.name}
@@ -262,7 +260,7 @@ const MyWarehouses = () => {
                           fontWeight: 'normal',
                         }}
                       >
-                        (Blocked)
+                        {t('blocked')}
                       </Typography>
                     )}
                   </Typography>
@@ -275,43 +273,23 @@ const MyWarehouses = () => {
                   <Box display="flex" alignItems="center" gap={1} mb={1}>
                     <StraightenIcon fontSize="small" color="action" />
                     <Typography variant="body2" color="text.secondary">
-                      Size: {warehouse.size_sqm} m²
+                      {t('size')}: {warehouse.size_sqm} m²
                     </Typography>
                   </Box>
                   <Typography variant="h6" color="primary" fontWeight={700} mb={1}>
-                    ${warehouse.price_per_day.toFixed(2)}/day
+                    {t('price_per_day')}: ${warehouse.price_per_day.toFixed(2)}
                   </Typography>
                 </CardContent>
-                <Box flexGrow={1} />
-                <CardActions sx={{ p: 2, pt: 0 }}>
-                  <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
-                    <Button
-                      variant="outlined"
-                      color="primary"
-                      fullWidth
-                      onClick={() => handleViewDetails(warehouse.id)}
-                      sx={{ fontWeight: 600 }}
-                      disabled={warehouse.is_blocked}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      onClick={() => navigate(`/warehouses/${warehouse.id}/edit`)}
-                      sx={{ fontWeight: 600 }}
-                      disabled={warehouse.is_blocked}
-                    >
-                      Edit
-                    </Button>
-                  </Box>
+                <CardActions>
+                  <Button size="small" onClick={() => handleViewDetails(warehouse.id)}>
+                    {t('view_details')}
+                  </Button>
                 </CardActions>
               </Card>
-            </Box>
-          ))}
-        </Grid>
-      )}
+            </Grid>
+          ))
+        )}
+      </Grid>
     </Container>
   );
 };

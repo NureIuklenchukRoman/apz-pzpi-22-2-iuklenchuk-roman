@@ -21,6 +21,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { getWarehouses } from '../../api/warehouse';
+import { useTranslation } from 'react-i18next';
 
 interface Warehouse {
   id: number;
@@ -40,6 +41,7 @@ interface Filters {
 }
 
 const Warehouses = () => {
+  const { t } = useTranslation();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [filteredWarehouses, setFilteredWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,7 +71,7 @@ const Warehouses = () => {
       const data = await getWarehouses();
       setWarehouses(data);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch warehouses');
+      setError(err.response?.data?.message || t('warehouses_fetch_failed'));
     } finally {
       setLoading(false);
     }
@@ -130,7 +132,7 @@ const Warehouses = () => {
     <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" component="h1">
-          Available Warehouses
+          {t('warehouses')}
         </Typography>
         <Box>
           <Button
@@ -139,13 +141,11 @@ const Warehouses = () => {
             onClick={() => setShowFilters(!showFilters)}
             sx={{ mr: 2 }}
           >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            {showFilters ? t('hide_filters') : t('show_filters')}
           </Button>
-          {user?.role === 'seller' && (
-            <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
-              Create Warehouse
-            </Button>
-          )}
+          <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
+            {t('create_warehouse')}
+          </Button>
         </Box>
       </Box>
 
@@ -155,7 +155,7 @@ const Warehouses = () => {
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
-                label="Name"
+                label={t('warehouse_name')}
                 value={filters.name}
                 onChange={(e) => handleFilterChange('name', e.target.value)}
               />
@@ -163,13 +163,13 @@ const Warehouses = () => {
             <Grid item xs={12} sm={6} md={3}>
               <TextField
                 fullWidth
-                label="Location"
+                label={t('location')}
                 value={filters.location}
                 onChange={(e) => handleFilterChange('location', e.target.value)}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Typography gutterBottom>Price Range ($/day)</Typography>
+              <Typography gutterBottom>{t('price_range')}</Typography>
               <Slider
                 value={[filters.minPrice, filters.maxPrice]}
                 onChange={(_, value) => {
@@ -183,7 +183,7 @@ const Warehouses = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Typography gutterBottom>Size Range (m²)</Typography>
+              <Typography gutterBottom>{t('size_range')}</Typography>
               <Slider
                 value={[filters.minSize, filters.maxSize]}
                 onChange={(_, value) => {
@@ -200,26 +200,23 @@ const Warehouses = () => {
         </Paper>
       )}
 
-      {error ? (
-        <Alert severity="error">{error}</Alert>
-      ) : (
-        <Grid container spacing={4} justifyContent="center">
-          {filteredWarehouses.map((warehouse) => (
-            <Box key={warehouse.id} sx={{ width: { xs: '100%', sm: '48%', md: '31%', lg: '23%' }, mb: 3 }}>
-              <Card
-                sx={{
-                  height: '100%',
-                  borderRadius: 3,
-                  boxShadow: 3,
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-6px) scale(1.03)',
-                    boxShadow: 6,
-                  },
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+
+      <Grid container spacing={3}>
+        {filteredWarehouses.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography align="center" color="text.secondary">
+              {t('no_warehouses_found')}
+            </Typography>
+          </Grid>
+        ) : (
+          filteredWarehouses.map((warehouse) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={warehouse.id}>
+              <Card>
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} gutterBottom>
                     {warehouse.name}
@@ -233,30 +230,23 @@ const Warehouses = () => {
                   <Box display="flex" alignItems="center" gap={1} mb={1}>
                     <StraightenIcon fontSize="small" color="action" />
                     <Typography variant="body2" color="text.secondary">
-                      Size: {warehouse.size_sqm} m²
+                      {t('size')}: {warehouse.size_sqm} m²
                     </Typography>
                   </Box>
                   <Typography variant="h6" color="primary" fontWeight={700} mb={1}>
-                    ${warehouse.price_per_day.toFixed(2)}/day
+                    {t('price_per_day')}: ${warehouse.price_per_day.toFixed(2)}
                   </Typography>
                 </CardContent>
-                <Box flexGrow={1} />
-                <CardActions sx={{ p: 2, pt: 0 }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    onClick={() => handleViewDetails(warehouse.id)}
-                    sx={{ fontWeight: 600 }}
-                  >
-                    View Details
+                <CardActions>
+                  <Button size="small" onClick={() => handleViewDetails(warehouse.id)}>
+                    {t('view_details')}
                   </Button>
                 </CardActions>
               </Card>
-            </Box>
-          ))}
-        </Grid>
-      )}
+            </Grid>
+          ))
+        )}
+      </Grid>
     </Container>
   );
 };

@@ -161,15 +161,15 @@ const AdminPanel = () => {
                           {blockLoading === user.id ? 'Unblocking...' : 'Unblock'}
                         </Button>
                       ) : (
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="small"
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        size="small"
                           disabled={blockLoading === user.id}
-                          onClick={() => handleBlockUser(user.id)}
-                        >
-                          {blockLoading === user.id ? 'Blocking...' : 'Block'}
-                        </Button>
+                        onClick={() => handleBlockUser(user.id)}
+                      >
+                        {blockLoading === user.id ? 'Blocking...' : 'Block'}
+                      </Button>
                       )}
                     </TableCell>
                   </TableRow>

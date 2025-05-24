@@ -165,9 +165,9 @@ const WarehouseDetails = () => {
           <Box minWidth={220} display="flex" flexDirection="column" alignItems="center" gap={2}>
             <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
               {user?.role !== 'admin' && (
-                <Button
-                  variant="contained"
-                  color="primary"
+            <Button
+              variant="contained"
+              color="primary"
                   onClick={() => navigate(`/rentals/new?warehouse=${warehouse.id}`)}
                   disabled={warehouse.is_blocked}
                 >
@@ -179,9 +179,9 @@ const WarehouseDetails = () => {
                   variant="outlined"
                   color="primary"
                   onClick={() => navigate(`/warehouses/${warehouse.id}/edit`)}
-                >
+            >
                   Edit Warehouse
-                </Button>
+            </Button>
               )}
             </Box>
           </Box>

@@ -10,9 +10,10 @@ import {
   Alert,
   Divider,
   Avatar,
+  Grid,
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import { useDispatch, useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 interface ProfileData {
@@ -24,6 +25,7 @@ interface ProfileData {
 }
 
 const Profile = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -55,7 +57,7 @@ const Profile = () => {
       setProfile(mappedData);
       setFormData(mappedData);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to fetch profile');
+      setError(err.response?.data?.message || t('profile_fetch_failed'));
     } finally {
       setLoading(false);
     }
@@ -76,20 +78,24 @@ const Profile = () => {
     setSuccess('');
 
     try {
-      // Map frontend fields to backend fields
-      const payload: any = {
-        ...formData,
+      const response = await api.put('/users/me/', {
         first_name: formData.firstName,
         last_name: formData.lastName,
-      };
-      delete payload.firstName;
-      delete payload.lastName;
+        phone: formData.phone,
+      });
 
-      await api.put('/users/me/', payload);
-      setSuccess('Profile updated successfully');
-      fetchProfile(); // Refresh profile data
+      const data = response.data;
+      const mappedData = {
+        firstName: data.first_name || '',
+        lastName: data.last_name || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        avatar: data.avatar || '',
+      };
+      setProfile(mappedData);
+      setSuccess(t('profile_update_success'));
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update profile');
+      setError(err.response?.data?.message || t('profile_update_failed'));
     } finally {
       setSaving(false);
     }
@@ -97,94 +103,85 @@ const Profile = () => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
-        <CircularProgress />
-      </Box>
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+          <CircularProgress />
+        </Box>
+      </Container>
     );
   }
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Profile
-            </Typography>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {t('profile')}
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
 
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
+          <Alert severity="error" sx={{ mb: 2 }}>
             {error}
           </Alert>
         )}
-
         {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
+          <Alert severity="success" sx={{ mb: 2 }}>
             {success}
           </Alert>
         )}
 
-      <Paper sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-          <Avatar
-            src={profile?.avatar}
-            sx={{ width: 100, height: 100, mr: 3 }}
-          >
-            {profile?.firstName?.charAt(0)}
-          </Avatar>
-          <Box>
-            <Typography variant="h5">
-              {profile?.firstName} {profile?.lastName}
-            </Typography>
-            <Typography color="text.secondary">
-              {profile?.email}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Divider sx={{ mb: 3 }} />
-
-        <form onSubmit={handleSubmit}>
-          <Box display="flex" flexWrap="wrap" gap={3}>
-            <Box flex={1} minWidth={220}>
+        <Box component="form" onSubmit={handleSubmit}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <Avatar
+                  src={profile?.avatar}
+                  sx={{ width: 100, height: 100 }}
+                  alt={t('profile_avatar')}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="First Name"
+                label={t('first_name')}
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleChange}
-                disabled={saving}
+                placeholder={t('first_name_placeholder')}
               />
-            </Box>
-            <Box flex={1} minWidth={220}>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Last Name"
+                label={t('last_name')}
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleChange}
-                disabled={saving}
+                placeholder={t('last_name_placeholder')}
               />
-            </Box>
-            <Box width="100%">
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Email"
+                label={t('email')}
                 name="email"
-                type="email"
                 value={formData.email}
-                onChange={handleChange}
-                disabled={saving}
+                disabled
+                placeholder={t('email_placeholder')}
               />
-            </Box>
-            <Box width="100%">
+            </Grid>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Phone"
+                label={t('phone')}
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                disabled={saving}
+                placeholder={t('phone_placeholder')}
               />
-            </Box>
-            <Box width="100%">
+            </Grid>
+            <Grid item xs={12}>
               <Button
                 type="submit"
                 variant="contained"
@@ -192,11 +189,11 @@ const Profile = () => {
                 disabled={saving}
                 sx={{ mt: 2 }}
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? t('saving') : t('save')}
               </Button>
-            </Box>
-          </Box>
-        </form>
+            </Grid>
+          </Grid>
+        </Box>
       </Paper>
     </Container>
   );

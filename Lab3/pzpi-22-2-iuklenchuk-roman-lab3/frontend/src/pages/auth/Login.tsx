@@ -13,9 +13,11 @@ import {
 } from '@mui/material';
 import type { RootState } from '../../store';
 import { loginStart, loginSuccess, loginFailure } from '../../store/slices/authSlice';
+import { useTranslation } from 'react-i18next';
 import api from '../../services/api';
 
 const Login = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -28,20 +30,16 @@ const Login = () => {
 
     try {
       const formData = new URLSearchParams();
-      formData.append('username', email); // важливо: ключ — `username`, бо FastAPI очікує саме його
+      formData.append('username', email);
       formData.append('password', password);
-      console.log("response");
 
       const response = await api.post('/auth/login', formData, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
       });
       
-      // Store the token
       localStorage.setItem('token', response.data.access_token);
 
-      // Create user object from the token payload
       const tokenPayload = JSON.parse(atob(response.data.access_token.split('.')[1]));
-      console.log(tokenPayload);
       const user = {
         id: tokenPayload.sub,
         email: tokenPayload.sub,
@@ -52,96 +50,69 @@ const Login = () => {
       dispatch(loginSuccess({ user, token: response.data.access_token }));
       navigate('/');
     } catch (err: any) {
-      dispatch(loginFailure(err.response?.data?.message || 'Login failed'));
+      dispatch(loginFailure(err.response?.data?.message || t('login_failed')));
     }
   };
 
   return (
-    <Container 
-      component="main" 
-      maxWidth="lg" 
-      sx={{ 
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh'
-      }}
-    >
-      <Box
-        sx={{
-          width: '100%',
-          maxWidth: '1200px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-            maxWidth: '400px',
-          }}
-        >
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          {error && (
-            <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-              {error}
-            </Alert>
-          )}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              disabled={loading}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-            <Box sx={{ textAlign: 'center' }}>
-              <Link component={RouterLink} to="/register" variant="body2" sx={{ display: 'block', mb: 1 }}>
-                {"Don't have an account? Sign Up"}
-              </Link>
-              <Link component={RouterLink} to="/reset-password" variant="body2">
-                Forgot Password?
-              </Link>
-            </Box>
+    <Container component="main" maxWidth="xs">
+      <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Typography component="h1" variant="h5" align="center" gutterBottom>
+          {t('login')}
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
+        <Box component="form" onSubmit={handleSubmit} noValidate>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label={t('email')}
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('email_placeholder')}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label={t('current_password')}
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t('password_placeholder')}
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
+          >
+            {loading ? t('loading') : t('login')}
+          </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Link component={RouterLink} to="/register" variant="body2">
+              {t('no_account')}
+            </Link>
           </Box>
-        </Paper>
-      </Box>
+          <Box sx={{ textAlign: 'center', mt: 1 }}>
+            <Link component={RouterLink} to="/reset-password" variant="body2">
+              {t('forgot_password')}
+            </Link>
+          </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };
