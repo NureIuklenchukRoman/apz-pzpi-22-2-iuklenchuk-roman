@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 class WarehouseSchema(BaseModel):
     name: str
-    location: str | None = None
+    location: str
     size_sqm: float
     price_per_day: float
     # available_premium_services: list | None = None
@@ -35,6 +35,11 @@ class WarehouseDeleteSchema(BaseModel):
 class WarehouseQuerySchema(BaseModel):
     name: Optional[str] = None
     location: Optional[str] = None
+    min_price: Optional[float] = None
+    max_price: Optional[float] = None
+    min_size: Optional[float] = None
+    max_size: Optional[float] = None
+    is_blocked: Optional[bool] = None
 
 
 class WarehouseResponseSchema(BaseModel):
@@ -43,4 +48,5 @@ class WarehouseResponseSchema(BaseModel):
     location: str | None = None
     size_sqm: float
     price_per_day: float
+    is_blocked: bool = False
     # available_premium_services: list | None = None

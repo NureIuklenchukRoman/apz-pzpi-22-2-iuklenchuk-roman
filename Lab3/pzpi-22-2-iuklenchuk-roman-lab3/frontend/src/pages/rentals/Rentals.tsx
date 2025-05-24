@@ -17,12 +17,12 @@ import api from '../../services/api';
 
 interface Rental {
   id: string;
-  warehouseId: string;
-  warehouseName: string;
-  startDate: string;
-  endDate: string;
-  status: 'active' | 'pending' | 'completed' | 'cancelled';
-  totalAmount: number;
+  warehouse_name: string;
+  warehouse_location: string;
+  start_date: string;
+  end_date: string;
+  status: string;
+  total_price: number;
 }
 
 const Rentals = () => {
@@ -37,7 +37,7 @@ const Rentals = () => {
 
   const fetchRentals = async () => {
     try {
-      const response = await api.get('/users/my_rents/');
+      const response = await api.get('/users/my_rents');
       setRentals(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch rentals');
@@ -50,9 +50,9 @@ const Rentals = () => {
     navigate(`/rentals/${id}`);
   };
 
-  const getStatusColor = (status: Rental['status']) => {
-    switch (status) {
-      case 'active':
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'reserved':
         return 'success';
       case 'pending':
         return 'warning';
@@ -62,6 +62,15 @@ const Rentals = () => {
         return 'error';
       default:
         return 'default';
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    } catch (error) {
+      return 'Invalid Date';
     }
   };
 
@@ -93,7 +102,7 @@ const Rentals = () => {
             <Card>
               <CardContent>
                 <Typography variant="h6" component="h2" gutterBottom>
-                  {rental.warehouseName}
+                  {rental.warehouse_name}
                 </Typography>
                 <Box sx={{ mb: 2 }}>
                   <Chip
@@ -104,13 +113,16 @@ const Rentals = () => {
                   />
                 </Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Start Date: {new Date(rental.startDate).toLocaleDateString()}
+                  Location: {rental.warehouse_location}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  End Date: {new Date(rental.endDate).toLocaleDateString()}
+                  Start Date: {formatDate(rental.start_date)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  End Date: {formatDate(rental.end_date)}
                 </Typography>
                 <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                  Total: ${rental.totalAmount}
+                  Total: ${rental.total_price.toFixed(2)}
                 </Typography>
               </CardContent>
               <CardActions>

@@ -11,44 +11,58 @@ import {
   Alert,
   Chip,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import {
   LocationOn as LocationIcon,
-  Storage as StorageIcon,
+  CalendarToday as CalendarIcon,
   AttachMoney as MoneyIcon,
-  Phone as PhoneIcon,
-  Email as EmailIcon,
+  Star as StarIcon,
 } from '@mui/icons-material';
+import { getWarehouse } from '../../api/warehouse';
 import api from '../../services/api';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store';
 
 interface Warehouse {
-  id: string;
+  id: number;
   name: string;
   location: string;
+  price_per_day: number;
+  busy_dates: string[];
+  is_blocked: boolean;
+  owned_by: number;
+}
+
+interface PremiumService {
+  id: number;
+  name: string;
   description: string;
-  capacity: number;
-  availableSpace: number;
-  features: string[];
-  contactPhone: string;
-  contactEmail: string;
-  status: 'available' | 'rented' | 'maintenance';
+  price: number;
 }
 
 const WarehouseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
+  const [services, setServices] = useState<PremiumService[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const { user } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    fetchWarehouseDetails();
+    if (id) {
+      fetchWarehouseDetails();
+      fetchWarehouseServices();
+    }
   }, [id]);
 
   const fetchWarehouseDetails = async () => {
     try {
-      const response = await api.get(`/warehouses/${id}/`);
-      setWarehouse(response.data);
+      const data = await getWarehouse(id!);
+      setWarehouse(data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch warehouse details');
     } finally {
@@ -56,20 +70,12 @@ const WarehouseDetails = () => {
     }
   };
 
-  const handleRent = () => {
-    navigate(`/rentals/new?warehouseId=${id}`);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'success';
-      case 'rented':
-        return 'error';
-      case 'maintenance':
-        return 'warning';
-      default:
-        return 'default';
+  const fetchWarehouseServices = async () => {
+    try {
+      const response = await api.get(`/services/warehouse-services/${id}`);
+      setServices(response.data);
+    } catch (err: any) {
+      console.error('Failed to fetch premium services:', err);
     }
   };
 
@@ -90,94 +96,97 @@ const WarehouseDetails = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {warehouse.name}
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      <Grid container spacing={3}>
-        <Grid xs={12} md={8}>
-          <Paper sx={{ p: 3 }}>
+    <Container maxWidth="md" sx={{ mt: 6, mb: 6, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 }, width: '100%', maxWidth: 700 }}>
+        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} alignItems={{ md: 'flex-start' }} justifyContent="space-between" gap={4}>
+          <Box flex={1}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              {warehouse.name}
+            </Typography>
+            {error && (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                {error}
+              </Alert>
+            )}
             <Typography variant="h6" gutterBottom>
-              Description
+              Details
             </Typography>
-            <Typography paragraph>
-              {warehouse.description}
-            </Typography>
-
-            <Divider sx={{ my: 3 }} />
-
-            <Typography variant="h6" gutterBottom>
-              Features
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 3 }}>
-              {warehouse.features.map((feature, index) => (
-                <Chip key={index} label={feature} />
-              ))}
-            </Box>
-
-            <Divider sx={{ my: 3 }} />
-
-            <Typography variant="h6" gutterBottom>
-              Contact Information
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <PhoneIcon color="action" />
-                <Typography>{warehouse.contactPhone}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <EmailIcon color="action" />
-                <Typography>{warehouse.contactEmail}</Typography>
-              </Box>
-            </Box>
-          </Paper>
-        </Grid>
-
-        <Grid xs={12} md={4}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ mb: 3 }}>
-              <Chip
-                label={warehouse.status.toUpperCase()}
-                color={getStatusColor(warehouse.status)}
-                sx={{ mb: 2 }}
-              />
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
                 <LocationIcon color="action" />
                 <Typography>{warehouse.location}</Typography>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                <StorageIcon color="action" />
-                <Typography>
-                  Available Space: {warehouse.availableSpace} sqm
-                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <MoneyIcon color="action" />
                 <Typography>
-                  Total Capacity: {warehouse.capacity} sqm
+                  Price: <b>${warehouse.price_per_day.toFixed(2)}</b>/day
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CalendarIcon color="action" />
+                <Typography>
+                  Busy Dates: <b>{warehouse.busy_dates.length}</b> days
                 </Typography>
               </Box>
             </Box>
-
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              onClick={handleRent}
-              disabled={warehouse.status !== 'available'}
-            >
-              {warehouse.status === 'available' ? 'Rent Now' : 'Not Available'}
-            </Button>
-          </Paper>
-        </Grid>
-      </Grid>
+            {services.length > 0 && (
+              <>
+                <Divider sx={{ my: 3 }} />
+                <Typography variant="h6" gutterBottom>
+                  Premium Services
+                </Typography>
+                <List>
+                  {services.map((service) => (
+                    <ListItem key={service.id} alignItems="flex-start" sx={{ px: 0 }}>
+                      <ListItemText
+                        primary={
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <StarIcon color="primary" fontSize="small" />
+                            <Typography variant="subtitle1">{service.name}</Typography>
+                          </Box>
+                        }
+                        secondary={
+                          <Box sx={{ mt: 1 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              {service.description}
+                            </Typography>
+                            <Typography variant="subtitle2" color="primary" sx={{ mt: 0.5 }}>
+                              ${service.price.toFixed(2)}
+                            </Typography>
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </>
+            )}
+          </Box>
+          <Box minWidth={220} display="flex" flexDirection="column" alignItems="center" gap={2}>
+            <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+              {user?.role !== 'admin' && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => navigate(`/rentals/new?warehouse=${warehouse.id}`)}
+                  disabled={warehouse.is_blocked}
+                >
+                  Rent Warehouse
+                </Button>
+              )}
+              {user?.role === 'seller' && warehouse.owned_by === user.id && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => navigate(`/warehouses/${warehouse.id}/edit`)}
+                >
+                  Edit Warehouse
+                </Button>
+              )}
+            </Box>
+          </Box>
+        </Box>
+      </Paper>
     </Container>
   );
 };

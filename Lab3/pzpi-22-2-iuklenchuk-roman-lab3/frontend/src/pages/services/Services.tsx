@@ -122,7 +122,7 @@ const Services = () => {
                   {service.description}
                 </Typography>
                 <Typography variant="h6" color="primary">
-                  ${service.price}
+                  ${service.price.toFixed(2)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Duration: {service.duration}
@@ -148,17 +148,17 @@ const Services = () => {
       <Dialog open={requestDialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Request Service</DialogTitle>
         <DialogContent>
-          <TextField
+            <TextField
             autoFocus
             margin="dense"
             label="Additional Notes"
-            fullWidth
-            multiline
-            rows={4}
-            value={requestNote}
-            onChange={(e) => setRequestNote(e.target.value)}
+              fullWidth
+              multiline
+              rows={4}
+              value={requestNote}
+              onChange={(e) => setRequestNote(e.target.value)}
             disabled={submitting}
-          />
+            />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} disabled={submitting}>

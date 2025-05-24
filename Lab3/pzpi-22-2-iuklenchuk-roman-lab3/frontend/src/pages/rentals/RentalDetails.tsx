@@ -165,7 +165,7 @@ const RentalDetails = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <MoneyIcon sx={{ mr: 1 }} />
                 <Typography>
-                  Total Amount: ${rental.totalAmount}
+                  Total Amount: ${rental.totalAmount.toFixed(2)}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center' }}>

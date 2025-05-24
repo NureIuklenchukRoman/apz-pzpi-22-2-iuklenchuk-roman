@@ -60,10 +60,10 @@ async def get_current_user(token: str, db: AsyncSession):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("email")
+        if email is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(email=email)
     except jwt.ExpiredSignatureError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -71,7 +71,7 @@ async def get_current_user(token: str, db: AsyncSession):
         )
     except jwt.PyJWTError:
         raise credentials_exception
-    query = select(User).filter(User.username == token_data.username)
+    query = select(User).filter(User.email == token_data.email)
     result = await db.execute(query)
     user = result.scalar_one_or_none()
     if user is None:

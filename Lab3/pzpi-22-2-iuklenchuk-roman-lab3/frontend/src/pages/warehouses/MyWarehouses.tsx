@@ -16,11 +16,13 @@ import {
   Grid,
   Paper,
   Slider,
+  FormControlLabel,
+  Switch,
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import StraightenIcon from '@mui/icons-material/Straighten';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { getWarehouses } from '../../api/warehouse';
+import api from '../../services/api';
 
 interface Warehouse {
   id: number;
@@ -28,6 +30,7 @@ interface Warehouse {
   location: string;
   size_sqm: number;
   price_per_day: number;
+  is_blocked: boolean;
 }
 
 interface Filters {
@@ -37,9 +40,10 @@ interface Filters {
   maxPrice: number;
   minSize: number;
   maxSize: number;
+  showBlocked: boolean;
 }
 
-const Warehouses = () => {
+const MyWarehouses = () => {
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [filteredWarehouses, setFilteredWarehouses] = useState<Warehouse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,22 +56,23 @@ const Warehouses = () => {
     maxPrice: 1000,
     minSize: 0,
     maxSize: 1000,
+    showBlocked: true,
   });
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth?.user);
 
   useEffect(() => {
-    fetchWarehouses();
+    fetchMyWarehouses();
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [warehouses, filters]);
 
-  const fetchWarehouses = async () => {
+  const fetchMyWarehouses = async () => {
     try {
-      const data = await getWarehouses();
-      setWarehouses(data);
+      const response = await api.get('/warehouses/my-warehouses');
+      setWarehouses(response.data);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch warehouses');
     } finally {
@@ -100,6 +105,10 @@ const Warehouses = () => {
       w.size_sqm <= filters.maxSize
     );
 
+    if (!filters.showBlocked) {
+      filtered = filtered.filter(w => !w.is_blocked);
+    }
+
     setFilteredWarehouses(filtered);
   };
 
@@ -118,6 +127,16 @@ const Warehouses = () => {
     navigate('/warehouses/create');
   };
 
+  if (!user || user.role !== 'seller') {
+    return (
+      <Container maxWidth="sm">
+        <Alert severity="error" sx={{ mt: 4 }}>
+          Access denied. Only sellers can view their warehouses.
+        </Alert>
+      </Container>
+    );
+  }
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
@@ -130,7 +149,7 @@ const Warehouses = () => {
     <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" component="h1">
-          Available Warehouses
+          My Warehouses
         </Typography>
         <Box>
           <Button
@@ -141,11 +160,9 @@ const Warehouses = () => {
           >
             {showFilters ? 'Hide Filters' : 'Show Filters'}
           </Button>
-          {user?.role === 'seller' && (
-            <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
-              Create Warehouse
-            </Button>
-          )}
+          <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
+            Create Warehouse
+          </Button>
         </Box>
       </Box>
 
@@ -169,7 +186,7 @@ const Warehouses = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
-              <Typography gutterBottom>Price Range ($/day)</Typography>
+              <Typography gutterBottom>Price Range</Typography>
               <Slider
                 value={[filters.minPrice, filters.maxPrice]}
                 onChange={(_, value) => {
@@ -196,6 +213,17 @@ const Warehouses = () => {
                 max={1000}
               />
             </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={filters.showBlocked}
+                    onChange={(e) => handleFilterChange('showBlocked', e.target.checked)}
+                  />
+                }
+                label="Show Blocked Warehouses"
+              />
+            </Grid>
           </Grid>
         </Paper>
       )}
@@ -218,11 +246,25 @@ const Warehouses = () => {
                   },
                   display: 'flex',
                   flexDirection: 'column',
+                  border: warehouse.is_blocked ? '2px solid #ff6b6b' : 'none',
                 }}
               >
                 <CardContent>
                   <Typography variant="h6" fontWeight={600} gutterBottom>
                     {warehouse.name}
+                    {warehouse.is_blocked && (
+                      <Typography
+                        component="span"
+                        sx={{
+                          ml: 1,
+                          color: '#ff6b6b',
+                          fontSize: '0.8rem',
+                          fontWeight: 'normal',
+                        }}
+                      >
+                        (Blocked)
+                      </Typography>
+                    )}
                   </Typography>
                   <Box display="flex" alignItems="center" gap={1} mb={1}>
                     <LocationOnIcon fontSize="small" color="action" />
@@ -242,15 +284,28 @@ const Warehouses = () => {
                 </CardContent>
                 <Box flexGrow={1} />
                 <CardActions sx={{ p: 2, pt: 0 }}>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    fullWidth
-                    onClick={() => handleViewDetails(warehouse.id)}
-                    sx={{ fontWeight: 600 }}
-                  >
-                    View Details
-                  </Button>
+                  <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      fullWidth
+                      onClick={() => handleViewDetails(warehouse.id)}
+                      sx={{ fontWeight: 600 }}
+                      disabled={warehouse.is_blocked}
+                    >
+                      View Details
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      fullWidth
+                      onClick={() => navigate(`/warehouses/${warehouse.id}/edit`)}
+                      sx={{ fontWeight: 600 }}
+                      disabled={warehouse.is_blocked}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
                 </CardActions>
               </Card>
             </Box>
@@ -261,4 +316,4 @@ const Warehouses = () => {
   );
 };
 
-export default Warehouses; 
+export default MyWarehouses; 

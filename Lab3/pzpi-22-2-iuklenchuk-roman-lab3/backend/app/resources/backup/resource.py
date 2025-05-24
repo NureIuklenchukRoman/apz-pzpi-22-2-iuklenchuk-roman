@@ -15,7 +15,7 @@ from app.utils.auth import Authorization
 
 backup_router = APIRouter()
 
-@backup_router.get("/database")
+@backup_router.get("/backup")
 async def backup_database(
     db: AsyncSession = Depends(get_db),
     user = Depends(Authorization(allowed_roles=[UserRole.ADMIN]))

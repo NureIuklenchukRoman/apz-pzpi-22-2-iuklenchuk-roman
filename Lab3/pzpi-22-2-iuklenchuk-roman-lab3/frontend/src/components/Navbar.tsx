@@ -2,14 +2,16 @@ import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../store';
+import type { User } from '../types/user';
+import { logout } from '../store/slices/authSlice';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useAppSelector((state) => state.auth?.user);
+  const user = useAppSelector((state) => state.auth?.user) as User | null;
 
   const handleLogout = () => {
-    // Add logout logic here
+    dispatch(logout());
     navigate('/login');
   };
 
@@ -22,10 +24,17 @@ const Navbar = () => {
         <Box>
           {user ? (
             <>
-              <Button color="inherit" onClick={() => navigate('/')}>Dashboard</Button>
               <Button color="inherit" onClick={() => navigate('/warehouses')}>Warehouses</Button>
+              {user.role === 'seller' && (
+                <>
+                  <Button color="inherit" onClick={() => navigate('/my-warehouses')}>My Warehouses</Button>
+                  <Button color="inherit" onClick={() => navigate('/revenue')}>Revenue</Button>
+                </>
+              )}
+              {user.role === 'admin' && (
+                <Button color="inherit" onClick={() => navigate('/admin')}>Admin Panel</Button>
+              )}
               <Button color="inherit" onClick={() => navigate('/rentals')}>Rentals</Button>
-              <Button color="inherit" onClick={() => navigate('/services')}>Services</Button>
               <Button color="inherit" onClick={() => navigate('/messages')}>Messages</Button>
               <Button color="inherit" onClick={() => navigate('/profile')}>Profile</Button>
               <Typography component="span" sx={{ mr: 2 }}>

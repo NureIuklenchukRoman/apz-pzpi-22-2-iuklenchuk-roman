@@ -132,25 +132,25 @@ const Humidity = () => {
       )}
 
       <Grid container spacing={3}>
-        {humidityData.map((data) => (
+                {humidityData.map((data) => (
           <Grid item xs={12} md={6} key={data.id}>
-            <Card>
-              <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Card>
+                  <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                   {getStatusIcon(data.status)}
                   <Typography variant="h6" component="h2" sx={{ ml: 1 }}>
-                    {data.warehouseName}
-                  </Typography>
-                </Box>
+                        {data.warehouseName}
+                      </Typography>
+                    </Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Current Humidity: {data.currentHumidity}%
-                </Typography>
+                      </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Target Humidity: {data.targetHumidity}%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
+                      </Typography>
+                    <Typography variant="body2" color="text.secondary">
                   Last Updated: {new Date(data.lastUpdated).toLocaleString()}
-                </Typography>
+                    </Typography>
                 <Box sx={{ mt: 2 }}>
                   <Typography gutterBottom>Adjust Target Humidity</Typography>
                   <Slider
@@ -163,10 +163,10 @@ const Humidity = () => {
                     valueLabelFormat={(value) => `${value}%`}
                   />
                 </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
       </Grid>
     </Container>
   );

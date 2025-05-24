@@ -10,6 +10,7 @@ from app.resources.warehouses.resource import warehouse_router
 from app.resources.premium_services.resource import services_router
 from app.resources.humidity.resource import humidity_router
 from app.resources.backup.resource import backup_router
+from app.resources.revenue.resource import revenue_router
 
 app = FastAPI()
 
@@ -32,7 +33,7 @@ app.add_middleware(
 )
 
 routers = [auth_router, warehouse_router, rent_router,
-           user_router, services_router, locks_router, messages_router, humidity_router, backup_router]
+           user_router, services_router, locks_router, messages_router, humidity_router, backup_router, revenue_router]
 
 for router in routers:
     app.include_router(router, prefix="/api")

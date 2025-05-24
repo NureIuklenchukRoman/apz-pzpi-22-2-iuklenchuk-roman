@@ -26,13 +26,13 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 async def authenticate_user(username: str, password: str, db: AsyncSession):
-    query = select(User).filter(User.username == username)
+    query = select(User).filter(User.email == username)
     result = await db.execute(query)
     user = result.scalar_one_or_none()
 
     if not user or not verify_password(password, user.password):
         return None
-    return UserInDB(username=user.username, email=user.email, password=user.password)
+    return UserInDB(username=user.username, email=user.email, password=user.password, role=user.role)
 
 
 @auth_router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -58,8 +58,8 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
         last_name=user_create.last_name
     )
     db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    await db.commit()
+    await db.refresh(new_user)
     return {"msg": "User created successfully", "user": new_user}
 
 
@@ -73,11 +73,11 @@ async def login(db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordReq
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.username},
+        data={"sub": user.username, "email": user.email, "role": user.role},
         expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     refresh_token = create_refresh_token(
-        data={"sub": user.username},
+        data={"sub": user.username, "email": user.email, "role": user.role},
         expires_delta=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     )
 
@@ -88,8 +88,8 @@ async def login(db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordReq
 async def refresh_token(refresh_token: str, db: AsyncSession = Depends(get_db)):
     user = await get_current_user(refresh_token, db)
 
-    new_access_token = create_access_token(data={"sub": user.username})
-    new_refresh_token = create_refresh_token(data={"sub": user.username})
+    new_access_token = create_access_token(data={"sub": user.username,"email": user.email, "role": user.role})
+    new_refresh_token = create_refresh_token(data={"sub": user.username,"email": user.email, "role": user.role})
 
     return {"access_token": new_access_token, "refresh_token": new_refresh_token, "token_type": "bearer"}
 

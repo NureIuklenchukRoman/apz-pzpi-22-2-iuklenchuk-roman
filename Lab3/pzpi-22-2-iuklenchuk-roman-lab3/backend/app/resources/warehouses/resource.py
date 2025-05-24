@@ -37,6 +37,16 @@ async def get_all_warehouses(db=Depends(get_db),
     return warehouses
 
 
+@warehouse_router.get("/my-warehouses", response_model=list[WarehouseResponseSchema])
+async def get_my_warehouses(db=Depends(get_db),
+                           user=Depends(Authorization(allowed_roles=[UserRole.SELLER]))):
+    check_if_user_blocked(user)
+    query = select(Warehouse).filter(Warehouse.owned_by == user.id)
+    result = await db.execute(query)
+    warehouses = result.scalars().all()
+    return warehouses
+
+
 @warehouse_router.get("/{warehouse_id}", response_model=WarehouseDetails)
 async def get_warehouse_details(warehouse_id: int, 
                             user=Depends(Authorization()),

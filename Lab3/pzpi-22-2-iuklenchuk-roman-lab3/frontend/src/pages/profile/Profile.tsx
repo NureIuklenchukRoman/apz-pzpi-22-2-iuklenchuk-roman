@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Paper,
-  Grid,
   TextField,
   Button,
   Box,
@@ -12,6 +11,7 @@ import {
   Divider,
   Avatar,
 } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useDispatch, useSelector } from 'react-redux';
 import api from '../../services/api';
 
@@ -20,7 +20,6 @@ interface ProfileData {
   lastName: string;
   email: string;
   phone: string;
-  address: string;
   avatar?: string;
 }
 
@@ -36,7 +35,6 @@ const Profile = () => {
     lastName: '',
     email: '',
     phone: '',
-    address: '',
   });
 
   useEffect(() => {
@@ -46,8 +44,16 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       const response = await api.get('/users/me/');
-      setProfile(response.data);
-      setFormData(response.data);
+      const data = response.data;
+      const mappedData = {
+        firstName: data.first_name || '',
+        lastName: data.last_name || '',
+        email: data.email || '',
+        phone: data.phone || '',
+        avatar: data.avatar || '',
+      };
+      setProfile(mappedData);
+      setFormData(mappedData);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to fetch profile');
     } finally {
@@ -70,7 +76,16 @@ const Profile = () => {
     setSuccess('');
 
     try {
-      await api.put('/users/me/', formData);
+      // Map frontend fields to backend fields
+      const payload: any = {
+        ...formData,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+      };
+      delete payload.firstName;
+      delete payload.lastName;
+
+      await api.put('/users/me/', payload);
       setSuccess('Profile updated successfully');
       fetchProfile(); // Refresh profile data
     } catch (err: any) {
@@ -92,19 +107,19 @@ const Profile = () => {
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
         Profile
-      </Typography>
+            </Typography>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
 
-      {success && (
-        <Alert severity="success" sx={{ mb: 3 }}>
-          {success}
-        </Alert>
-      )}
+        {success && (
+          <Alert severity="success" sx={{ mb: 3 }}>
+            {success}
+          </Alert>
+        )}
 
       <Paper sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -127,8 +142,8 @@ const Profile = () => {
         <Divider sx={{ mb: 3 }} />
 
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+          <Box display="flex" flexWrap="wrap" gap={3}>
+            <Box flex={1} minWidth={220}>
               <TextField
                 fullWidth
                 label="First Name"
@@ -137,8 +152,8 @@ const Profile = () => {
                 onChange={handleChange}
                 disabled={saving}
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Box>
+            <Box flex={1} minWidth={220}>
               <TextField
                 fullWidth
                 label="Last Name"
@@ -147,8 +162,8 @@ const Profile = () => {
                 onChange={handleChange}
                 disabled={saving}
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box width="100%">
               <TextField
                 fullWidth
                 label="Email"
@@ -158,8 +173,8 @@ const Profile = () => {
                 onChange={handleChange}
                 disabled={saving}
               />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box width="100%">
               <TextField
                 fullWidth
                 label="Phone"
@@ -168,18 +183,8 @@ const Profile = () => {
                 onChange={handleChange}
                 disabled={saving}
               />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                disabled={saving}
-              />
-            </Grid>
-            <Grid item xs={12}>
+            </Box>
+            <Box width="100%">
               <Button
                 type="submit"
                 variant="contained"
@@ -189,8 +194,8 @@ const Profile = () => {
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </Button>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </form>
       </Paper>
     </Container>

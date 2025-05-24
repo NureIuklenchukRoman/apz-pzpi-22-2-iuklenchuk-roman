@@ -38,13 +38,15 @@ const Login = () => {
       
       // Store the token
       localStorage.setItem('token', response.data.access_token);
-      
+
       // Create user object from the token payload
       const tokenPayload = JSON.parse(atob(response.data.access_token.split('.')[1]));
+      console.log(tokenPayload);
       const user = {
         id: tokenPayload.sub,
         email: tokenPayload.sub,
-        username: tokenPayload.sub.split('@')[0]
+        username: tokenPayload.sub.split('@')[0],
+        role: tokenPayload.role
       };
 
       dispatch(loginSuccess({ user, token: response.data.access_token }));
@@ -130,8 +132,11 @@ const Login = () => {
               {loading ? 'Signing in...' : 'Sign In'}
             </Button>
             <Box sx={{ textAlign: 'center' }}>
-              <Link component={RouterLink} to="/register" variant="body2">
+              <Link component={RouterLink} to="/register" variant="body2" sx={{ display: 'block', mb: 1 }}>
                 {"Don't have an account? Sign Up"}
+              </Link>
+              <Link component={RouterLink} to="/reset-password" variant="body2">
+                Forgot Password?
               </Link>
             </Box>
           </Box>

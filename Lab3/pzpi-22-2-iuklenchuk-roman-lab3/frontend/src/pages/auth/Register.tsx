@@ -10,6 +10,10 @@ import {
   Box,
   Link,
   Alert,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { loginSuccess } from '../../store/slices/authSlice';
 import api from '../../services/api';
@@ -22,14 +26,15 @@ const Register = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'customer',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name as string]: e.target.value,
     });
   };
 
@@ -49,10 +54,20 @@ const Register = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
+        role: formData.role,
       });
 
-      dispatch(loginSuccess(response.data));
-      localStorage.setItem('token', response.data.token);
+      // Create user object from the token payload
+      const tokenPayload = JSON.parse(atob(response.data.access_token.split('.')[1]));
+      const user = {
+        id: tokenPayload.sub,
+        email: tokenPayload.sub,
+        username: tokenPayload.sub.split('@')[0],
+        role: tokenPayload.role
+      };
+
+      dispatch(loginSuccess({ user, token: response.data.access_token }));
+      localStorage.setItem('token', response.data.access_token);
       navigate('/');
     } catch (err: any) {
       if (err.response?.data?.detail) {
@@ -132,6 +147,20 @@ const Register = () => {
             value={formData.confirmPassword}
             onChange={handleChange}
           />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="role-label">Role</InputLabel>
+            <Select
+              labelId="role-label"
+              id="role"
+              name="role"
+              value={formData.role}
+              label="Role"
+              onChange={handleChange}
+            >
+              <MenuItem value="CUSTOMER">Customer</MenuItem>
+              <MenuItem value="SELLER">Seller</MenuItem>
+            </Select>
+          </FormControl>
           <Button
             type="submit"
             fullWidth

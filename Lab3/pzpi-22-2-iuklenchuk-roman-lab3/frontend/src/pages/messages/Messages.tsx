@@ -21,12 +21,9 @@ import api from '../../services/api';
 
 interface Message {
   id: string;
-  senderId: string;
-  senderName: string;
-  senderAvatar?: string;
-  content: string;
-  timestamp: string;
-  isRead: boolean;
+  user_id: number;
+  text: string;
+  created_at: string;
 }
 
 const Messages = () => {
@@ -67,7 +64,7 @@ const Messages = () => {
     setError('');
 
     try {
-      await api.post('/messages/', { content: newMessage });
+      await api.post('/messages/', { text: newMessage });
       setNewMessage('');
       fetchMessages(); // Refresh messages after sending
     } catch (err: any) {
@@ -111,15 +108,10 @@ const Messages = () => {
           {messages.map((message, index) => (
             <div key={message.id}>
               <ListItem alignItems="flex-start">
-                <ListItemAvatar>
-                  <Avatar src={message.senderAvatar}>
-                    {message.senderName.charAt(0)}
-                  </Avatar>
-                </ListItemAvatar>
                 <ListItemText
                   primary={
                     <Typography component="span" variant="subtitle1">
-                      {message.senderName}
+                      Message #{message.id}
                     </Typography>
                   }
                   secondary={
@@ -130,14 +122,14 @@ const Messages = () => {
                         color="text.primary"
                         sx={{ display: 'block' }}
                       >
-                        {message.content}
+                        {message.text}
                       </Typography>
                       <Typography
                         component="span"
                         variant="caption"
                         color="text.secondary"
                       >
-                        {formatTimestamp(message.timestamp)}
+                        {formatTimestamp(message.created_at)}
                       </Typography>
                     </>
                   }
@@ -150,27 +142,7 @@ const Messages = () => {
         </List>
       </Paper>
 
-      <Paper component="form" onSubmit={handleSendMessage} sx={{ p: 2 }}>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <TextField
-            fullWidth
-            variant="outlined"
-            placeholder="Type your message..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            disabled={sending}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={sending || !newMessage.trim()}
-            endIcon={<SendIcon />}
-          >
-            Send
-          </Button>
-        </Box>
-      </Paper>
+      
     </Container>
   );
 };
