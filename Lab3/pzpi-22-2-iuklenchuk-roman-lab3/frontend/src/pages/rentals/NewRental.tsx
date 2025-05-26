@@ -38,7 +38,13 @@ interface PremiumService {
 const NewRental = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const warehouseId = searchParams.get('warehouseId');
+    console.log('All search params:', Object.fromEntries(searchParams));
+  console.log('Raw searchParams:', searchParams);
+  console.log('URL:', window.location.href);
+  const warehouseId = new URLSearchParams(window.location.search).get('warehouse');
+
+  console.log(warehouseId);
+
   const navigate = useNavigate();
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
   const [services, setServices] = useState<PremiumService[]>([]);

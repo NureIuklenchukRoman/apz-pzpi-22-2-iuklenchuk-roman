@@ -29,6 +29,10 @@
   
   "create_warehouse": "Створити Новий Склад",
   "warehouse_name": "Назва Складу",
+  "period": "Період",
+  "access_code": "Код Доступу",
+  "selected_services": "Вибрані Послуги",
+  "no_addition_service_selected": "Додаткові послуги не вибрані",
   "location": "Розташування",
   "size": "Розмір (м²)",
   "price_per_day": "Ціна за День ($)",
@@ -48,6 +52,7 @@
   
   "my_rentals": "Мої Оренди",
   "rental_details": "Деталі Оренди",
+  "rental_info": "Інформація про Оренду",
   "new_rental": "Нова Оренда",
   "start_date": "Дата Початку",
   "end_date": "Дата Завершення",

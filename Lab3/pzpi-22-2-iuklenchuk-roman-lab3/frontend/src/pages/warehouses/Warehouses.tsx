@@ -57,7 +57,7 @@ const Warehouses = () => {
   });
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.auth?.user);
-
+  console.log(user);
   useEffect(() => {
     fetchWarehouses();
   }, []);
@@ -143,9 +143,9 @@ const Warehouses = () => {
           >
             {showFilters ? t('hide_filters') : t('show_filters')}
           </Button>
-          <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
+          {user.role == "seller" && <Button variant="contained" color="primary" onClick={handleCreateWarehouse}>
             {t('create_warehouse')}
-          </Button>
+          </Button>}
         </Box>
       </Box>
 

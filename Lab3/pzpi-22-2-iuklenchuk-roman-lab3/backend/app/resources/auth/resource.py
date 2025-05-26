@@ -60,7 +60,16 @@ async def register_user(user_create: UserCreate, db: AsyncSession = Depends(get_
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
-    return {"msg": "User created successfully", "user": new_user}
+    access_token = create_access_token(
+        data={"sub": new_user.username, "email": new_user.email, "role": new_user.role},
+        expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    refresh_token = create_refresh_token(
+        data={"sub": new_user.username, "email": new_user.email, "role": new_user.role},
+        expires_delta=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+    )
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 @auth_router.post("/login", response_model=Token)

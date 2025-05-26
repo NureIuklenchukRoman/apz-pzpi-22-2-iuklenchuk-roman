@@ -1,6 +1,12 @@
 from pydantic import BaseModel, EmailStr
 from datetime import date
-from typing import Optional
+from typing import Optional, List
+
+class PremiumServiceResponseSchema(BaseModel):
+    name: str
+    description: str
+    price: float
+
 class RentalResponseSchema(BaseModel):
     id: int
     warehouse_name: str
@@ -9,6 +15,9 @@ class RentalResponseSchema(BaseModel):
     end_date: date
     total_price: float
     status: str
+    services: List[PremiumServiceResponseSchema] = []
+    code: str | None = None
+
 
 class LockResponseSchema(BaseModel):
     id: int

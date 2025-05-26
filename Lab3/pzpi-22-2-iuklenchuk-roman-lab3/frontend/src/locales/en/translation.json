@@ -29,6 +29,10 @@
   
   "create_warehouse": "Create New Warehouse",
   "warehouse_name": "Warehouse Name",
+  "access_code": "Access Code",
+  "selected_services": "Selected Services",
+  "no_addition_service_selected": "No additional service selected",
+  "period": "Period",
   "location": "Location",
   "size": "Size (m²)",
   "price_per_day": "Price per Day ($)",
@@ -48,6 +52,7 @@
   
   "my_rentals": "My Rentals",
   "rental_details": "Rental Details",
+  "rental_info": "Rental Information",
   "new_rental": "New Rental",
   "start_date": "Start Date",
   "end_date": "End Date",

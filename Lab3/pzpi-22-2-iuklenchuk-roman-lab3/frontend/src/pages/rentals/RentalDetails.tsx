@@ -19,9 +19,10 @@ import {
   CalendarToday as CalendarIcon,
   AttachMoney as MoneyIcon,
   Receipt as ReceiptIcon,
+  
 } from '@mui/icons-material';
 import api from '../../services/api';
-
+import LockIcon from '@mui/icons-material/Lock';
 interface Rental {
   id: string;
   warehouseId: string;
@@ -33,7 +34,7 @@ interface Rental {
   paymentStatus: 'pending' | 'paid' | 'refunded';
   createdAt: string;
 }
-
+import { useTranslation } from 'react-i18next';
 const RentalDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const RentalDetails = () => {
   const [error, setError] = useState('');
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchRentalDetails();
@@ -88,18 +90,7 @@ const RentalDetails = () => {
     }
   };
 
-  const getPaymentStatusColor = (status: string) => {
-    switch (status) {
-      case 'paid':
-        return 'success';
-      case 'pending':
-        return 'warning';
-      case 'refunded':
-        return 'info';
-      default:
-        return 'default';
-    }
-  };
+
 
   // Helper function to safely capitalize strings
   const capitalizeString = (str: string | undefined | null): string => {
@@ -128,17 +119,14 @@ const RentalDetails = () => {
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1">
-            Rental Details
+            {t('rental_details')}
           </Typography>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Chip
               label={capitalizeString(rental.status)}
               color={getStatusColor(rental.status || '')}
             />
-            <Chip
-              label={`Payment: ${capitalizeString(rental.payment_status)}`}
-              color={getPaymentStatusColor(rental.payment_status || '')}
-            />
+
           </Box>
         </Box>
 
@@ -152,36 +140,60 @@ const RentalDetails = () => {
           <Grid item xs={12} md={8}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
-                Rental Information
+                {t('rental_info')}
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <WarehouseIcon sx={{ mr: 1 }} />
                 <Typography>
-                  Warehouse: {rental.warehouse_name || 'Unknown'}
+                 {t('warehouse_name')}: {rental.warehouse_name || 'Unknown'}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <CalendarIcon sx={{ mr: 1 }} />
                 <Typography>
-                  Period: {new Date(rental.start_date).toLocaleDateString()} - {new Date(rental.endDate).toLocaleDateString()}
+                  {t('period')}: {new Date(rental.start_date).toLocaleDateString()} - {new Date(rental.end_date).toLocaleDateString()}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <MoneyIcon sx={{ mr: 1 }} />
                 <Typography>
-                  Total Amount: ${(rental.total_amount || 0).toFixed(2)}
+                  {t('total_price')}: ${(rental.total_price || 0).toFixed(2)}
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <LockIcon sx={{ mr: 1 }} />
+                <Typography>
+                  {t('access_code')}: {rental.code }
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', mb: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                 {t('selected_services')}
+                </Typography>
+                {rental.services && rental.services.length > 0 ? (
+                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    {rental.services.map((service, index: number) => (
+                      <Chip 
+                        key={`${service.name}-${index}`} 
+                        label={`${service.name} - $${service.price.toFixed(2)}`}
+                        variant="outlined"
+                      />
+                    ))}
+                  </Box>
+                ) : (
+                  <Typography>{t('no_addition_service_selected')}</Typography>
+                )}
+              </Box>
+              {/* <Box sx={{ display: 'flex', alignItems: 'center' }}>
                 <ReceiptIcon sx={{ mr: 1 }} />
                 <Typography>
                   Created: {new Date(rental.created_at).toLocaleString()}
                 </Typography>
-              </Box>
+              </Box> */}
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          {/* <Grid item xs={12} md={4}>
             <Paper elevation={2} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Actions
@@ -206,7 +218,7 @@ const RentalDetails = () => {
                 </Button>
               )}
             </Paper>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Paper>
 

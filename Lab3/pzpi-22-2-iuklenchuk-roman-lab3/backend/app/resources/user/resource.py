@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db
 from app.utils.auth import Authorization
 from app.resources._shared.query import update_model
-from app.database.models import Warehouse, Rental, User, UserRole, Lock, RentalStatus
+from app.database.models import Warehouse, Rental, User, UserRole, Lock, RentalStatus, PremiumService
 
 from .schemas import RentalResponseSchema, UserResponseSchema, UserUpdateSchema, LockResponseSchema
 
@@ -57,6 +57,14 @@ async def get_my_rent(rent_id: int, user=Depends(Authorization()), db=Depends(ge
     warehouse_result = await db.execute(warehouse_query)
     warehouse = warehouse_result.scalar_one_or_none()
 
+    services_query = select(PremiumService).filter(
+        PremiumService.warehouse_id == rental.warehouse_id)
+    services_result = await db.execute(services_query)
+    services = services_result.scalars().all()
+    lock = select(Lock).filter(Lock.warehouse_id == rental.warehouse_id)
+    lock_result = await db.execute(lock)
+    lock = lock_result.scalar_one_or_none()
+    
     return dict(
         id=rental.id,
         warehouse_name=warehouse.name,
@@ -64,7 +72,9 @@ async def get_my_rent(rent_id: int, user=Depends(Authorization()), db=Depends(ge
         start_date=rental.start_date,
         end_date=rental.end_date,
         status=rental.status,
-        total_price=rental.total_price
+        total_price=rental.total_price,
+        services=[{"description": service.description, "name": service.name, "price": service.price} for service in services],
+        code = lock.access_key if lock else None,
     )
 
 
