@@ -193,32 +193,7 @@ const RentalDetails = () => {
             </Paper>
           </Grid>
 
-          {/* <Grid item xs={12} md={4}>
-            <Paper elevation={2} sx={{ p: 3 }}>
-              <Typography variant="h6" gutterBottom>
-                Actions
-              </Typography>
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{ mb: 2 }}
-                onClick={() => navigate(`/warehouses/${rental.warehouse_id}`)}
-              >
-                View Warehouse
-              </Button>
-              {rental.status === 'active' && (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  fullWidth
-                  onClick={() => setCancelDialogOpen(true)}
-                >
-                  Cancel Rental
-                </Button>
-              )}
-            </Paper>
-          </Grid> */}
+      
         </Grid>
       </Paper>
 

@@ -230,7 +230,7 @@ const Warehouses = () => {
                   <Box display="flex" alignItems="center" gap={1} mb={1}>
                     <StraightenIcon fontSize="small" color="action" />
                     <Typography variant="body2" color="text.secondary">
-                      {t('size')}: {warehouse.size_sqm} m²
+                      {t('size')}: {warehouse.size_sqm.toFixed(2)} m²
                     </Typography>
                   </Box>
                   <Typography variant="h6" color="primary" fontWeight={700} mb={1}>

@@ -57,6 +57,7 @@
   "start_date": "Start Date",
   "end_date": "End Date",
   "total_price": "Total Price",
+  
   "status": "Status",
   "payment_status": "Payment Status",
   "view_details": "View Details",

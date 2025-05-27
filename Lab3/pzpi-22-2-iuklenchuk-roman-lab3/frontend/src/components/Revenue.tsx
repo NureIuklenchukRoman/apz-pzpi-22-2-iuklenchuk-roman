@@ -221,40 +221,7 @@ const Revenue = () => {
             </Box>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3, minWidth: 320 }}>
-            <Typography variant="h6" gutterBottom>
-              {t('revenue_by_service')}
-            </Typography>
-            <Box sx={{ height: 400 }}>
-              {revenueData.revenue_by_service.length === 0 ? (
-                <Box display="flex" alignItems="center" justifyContent="center" height="100%">
-                  <Typography color="text.secondary">{t('no_data_available')}</Typography>
-                </Box>
-              ) : (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={revenueData.revenue_by_service}
-                      dataKey="revenue"
-                      nameKey="service_name"
-                      cx="50%"
-                      cy="50%"
-                      outerRadius={100}
-                      label
-                    >
-                      {revenueData.revenue_by_service.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              )}
-            </Box>
-          </Paper>
-        </Grid>
+
         <Grid item xs={12}>
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>

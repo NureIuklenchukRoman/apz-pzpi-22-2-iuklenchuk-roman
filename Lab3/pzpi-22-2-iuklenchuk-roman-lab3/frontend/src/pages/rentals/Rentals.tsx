@@ -24,13 +24,13 @@ interface Rental {
   status: string;
   total_price: number;
 }
-
+import { useTranslation } from 'react-i18next';
 const Rentals = () => {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
+  const { t } = useTranslation();
   useEffect(() => {
     fetchRentals();
   }, []);
@@ -93,7 +93,7 @@ const Rentals = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        My Rentals
+         {t("my_rentals")}
       </Typography>
 
       <Grid container spacing={3}>
@@ -113,16 +113,16 @@ const Rentals = () => {
                   />
                 </Box>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Location: {rental.warehouse_location}
+                  {t("location")} {rental.warehouse_location}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  Start Date: {formatDate(rental.start_date)}
+                   {t("start_date")}: {formatDate(rental.start_date)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
-                  End Date: {formatDate(rental.end_date)}
+                   {t("end_date")}: {formatDate(rental.end_date)}
                 </Typography>
                 <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
-                  Total: ${rental.total_price.toFixed(2)}
+                   {t("total_price")}: ${rental.total_price.toFixed(2)}
                 </Typography>
               </CardContent>
               <CardActions>

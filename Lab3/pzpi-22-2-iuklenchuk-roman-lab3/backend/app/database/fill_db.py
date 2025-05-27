@@ -38,7 +38,7 @@ async def create_users(session, num_users=20):
             phone=fake.phone_number(),
             password=fake.password(),
             role=random.choice(list(UserRole)),
-            is_blocked=random.choice([True, False])
+            is_blocked=False
         )
         users.append(user)
     session.add_all(users)
@@ -66,10 +66,10 @@ async def create_locks(session, num_locks=100):
     warehouses = await session.execute(select(Warehouse))
     warehouse_list = warehouses.scalars().all()
     locks = []
-    for _ in range(num_locks):
+    for warehouse in warehouse_list:
         lock = Lock(
             ip=fake.ipv4(),
-            warehouse_id=random.choice(warehouse_list).id,
+            warehouse_id=warehouse.id,
             access_key=str(random.randint(10**9, 10**10 - 1))
         )
         locks.append(lock)
