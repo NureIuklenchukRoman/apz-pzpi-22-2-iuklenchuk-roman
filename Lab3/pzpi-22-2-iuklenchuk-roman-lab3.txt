@@ -4,9 +4,9 @@
 Кафедра програмної інженерії
 
 Звіт
-З лабораторної роботи №2
+З лабораторної роботи №3
 З дисципліни «Архітектура програмного забезпечення»
-на тему: «РОЗРОБКА СЕРВЕРНОЇ ЧАСТИНИ СИСТЕМИ »
+на тему: «РОЗРОБКА ВЕБКЛІЄНТА СИСТЕМИ»
 
 Виконавець:		
 ст. гр. ПЗПІ-22-2						                    Юкленчук Р. О. 
@@ -30,52 +30,27 @@
 
 1 ІСТОРІЯ ЗМІН
 
-№
-Дата
-Версія звіту
-Опис змін та виправлень
-1
-01.05.2025
-0.1
-Створено розділ «Завдання»
-2
-02.05.2025
-0.1
-Створено розділ «Опис виконаної роботи»
-3
-03.05.2025
-0.1
-Наповнено додатки А та Б
-4
-03.05.2025
-0.1
-Підбито висновки роботи
-5
-03.05.2025
-0.1
-Заповнено додаток В з програмним кодом
+№	Дата	Версія звіту	Опис змін та виправлень
+1	19.05.2025	0.1	Створено структуру звіту. Визначено завдання на лабораторну роботу
+2	24.05.2025	0.1	Описано хід роботи, додаток А, додаток Б, додаток В. Сформульовано висновок роботи
 
 2 ЗАВДАННЯ
 
-     Метою даного лабораторного заняття є втілення функцій бізнес логіки та функцій адміністрування системи.
+     Метою даного лабораторного заняття є розробка клієнтської / front-end частини програмної системи.
      
 3 ОПИС ВИКОНАНОЇ РОБОТИ
 
-        До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А. 
-          У межах виконання проєкту було реалізовано програмну систему, орієнтовану на зручний та швидкий процес оренди складу. Основною функціональністю стала можливість пошуку, та оренди складів, перегляд аналітики по складах.
-          Крім функціонального модуля, у систему було інтегровано механізм сповіщень, який інформує користувача про кінець оренди, а також успішну оренду. Це забезпечує оперативну реакцію від користувача, наприклад він зможе вчасно подовжити оренду.
-          Також було реалізовано адміністративний функціонал, що включає можливість керування користувачами (блокування та розблокування), а також резервне копіювання бази даних. Це підвищує контроль над контентом сайту, та дає можливість блокувати шахраїв.
-          Окремо створено ролі користувачів і різний доступ для кожної ролі, наприклад адмін зможе блокувати користувачів, продавець виставляти склади на оренду, а покупець зможу орендувати склади.
+     До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А.
+     Усі графічні матеріали наведені у додатку Б. 
+     У рамках виконання завдання було розроблено клієнтську частину вебдодатку з використанням бібліотеки React, що забезпечило створення інтерактивного та функціонального інтерфейсу. Робота розпочалася з ініціалізації проєкту, під час якої було налаштовано базову структуру додатку.
+     Основна увага під час розробки була зосереджена на забезпеченні зручності та інтуїтивності інтерфейсу, а також на реалізації ключових функціональних можливостей. Було впроваджено компоненти для відображення даних про склади, сервіси, адмін панел, а також доходу для продавців. Окремо реалізовано функціонал адміністрування, який дозволяє управляти користувачами, створювати та відновлювати резервні копії бази даних. 
+     Значна частина роботи була присвячена впровадженню локалізації з використанням бібліотеки react-i18next. Для кожної сторінки створено набір перекладів на англійську та українську мови, що дозволило адаптувати інтерфейс до потреб багатомовних користувачів.
+     Для забезпечення візуальної привабливості та зручності використання було розроблено стилі з використанням material-ui, які застосовувалися до всіх компонентів. Стилі були створені з акцентом на сучасний дизайн, адаптивність та єдність стилістичного оформлення. У результаті виконаної роботи було створено функціональний вебдодаток із зручним інтерфейсом, підтримкою локалізації та можливостями адміністрування, що відповідає поставленим вимогам
+     Деякий код застосунку наведено у додатку В.
      
 ВИСНОВКИ
 
-     У результаті виконання даної лабораторної роботи було реалізовано ключові елементи бізнес-логіки програмної системи з використанням математичних методів аналізу. Окрім цього, було впроваджено функціонал сповіщення користувачів а також реалізовано повноцінні можливості адміністрування системи.
-
-
-
-
-
-
+     У результаті виконання даної лабораторної роботи було розроблено клієнтську частину вебдодатку на базі React, що включає зручний інтерфейс для взаємодії з користувачами. Створено ключові сторінки, зокрема домашню, авторизацію, реєстрацію, а також панелі адміністрування, які дозволяють ефективно управляти користувачами, кімнатами, базою даних та системними налаштуваннями. Особливу увагу приділено реалізації локалізації, що забезпечує підтримку англійської та української мов, а також адаптацію відображення даних, таких як температура, залежно від обраної мови.
 
 
 
@@ -83,17 +58,18 @@
 ДОДАТОК А
 Відеозапис
 
-Відеозапис презентації результатів лабораторної роботи: https://www.youtube.com/watch?v=fXvlOHCwtf0
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/zD4jJpDmGzA
 
 Хронологічний опис відеозапису: 
-00:00 Вітання 
-0:12 password reset 
-1:12 change password 
-1:55 warehouse rent 
-4:55 blocking customers 
-6:61 unblocking customers 
-7:47 seller revenue 
-9.06 database backup
+00:00 Вітання. 
+00:12 Аутентифікація. 
+00:51 Функції бізнес логіки. 
+Оренда складів. 
+01:57 Локалізація. 
+02:15 Функції бізнес логіки продавця. 
+02:40 Функції безнеслогіки аналітики доходу. 
+04:32 Функції адміністратора. 
+06:20 Кінець доповіді.
 ДОДАТОК Б
 Графічні матеріали
 
@@ -106,380 +82,688 @@
 
 Рисунок Б.3 — UML-діаграма прецедентів
 
-
-Рисунок Б.4 – Діаграма діяльності для бронювання складу
-
-
-Рисунок Б.5– Діаграма діяльності для аналітики по складу
+Рисунок Б.4 — UML діаграма компонентів
 
 
-Рисунок Б.6– Діаграма діяльності резервного копіювання бази даних
+Рисунок Б.5 – Діаграма діяльності для створення резервної копії бази даних
+
+Рисунок Б.6 – UML діаграма взаємодії. Створення резервної копії бази даних
+
+
+
 
 
 
 ДОДАТОК В
 Програмний код
 
-     В.1 Математична обробка прикладних даних. Код файлу з розрахунком статистики по складу 
-	GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/warehouses/report_service.py
+     В.1 Математична обробка прикладних даних.
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab3/pzpi-22-2-iuklenchuk-roman-lab3/frontend/src/components/Revenue.tsx
 
-     1  import pandas as pd
-     2  from sqlalchemy import select, func
-     3  from sqlalchemy.ext.asyncio import AsyncSession
-     4  from app.database.models import Warehouse, Rental
-     5
-     6
-     7  async def check_warehouse_owner(db, user, id):
-     8      query = select(Warehouse).filter(Warehouse.id == id)
-     9      result = await db.execute(query)
-    10      warehouse = result.scalars().first()
-    11      if warehouse.owned_by != user.id:
-    12          return False
-    13      return True
-    14
-    15
-    16  async def get_rental_data(db: AsyncSession, user):
-    17      result = await db.execute(select(Rental))
-    18      rentals = result.scalars().all()
-    19
-    20      data = []
-    21      for rental in rentals:
-    22          if await check_warehouse_owner(db, user, rental.warehouse_id):
-    23              data.append({
-    24                  "user_id": rental.user_id,
-    25                  "warehouse_id": rental.warehouse_id,
-    26                  "start_date": rental.start_date,
-    27                  "end_date": rental.end_date,
-    28                  "total_price": rental.total_price
-    29              })
-    30
-    31      df = pd.DataFrame(data)
-    32
-    33      if df.empty:
-    34          return df
-    35
-    36      df['start_date'] = pd.to_datetime(df['start_date'])
-    37      df['end_date'] = pd.to_datetime(df['end_date'])
-    38
-    39      return df
-    40
+          1  import { useState, useEffect } from 'react';
+     2  import {
+     3    Container,
+     4    Typography,
+     5    Paper,
+     6    Box,
+     7    CircularProgress,
+     8    Alert,
+     9    Card,
+    10    CardContent,
+    11    Select,
+    12    MenuItem,
+    13    FormControl,
+    14    InputLabel,
+    15  } from '@mui/material';
+    16  import Grid from '@mui/material/Grid';
+    17  import {
+    18    LineChart,
+    19    Line,
+    20    BarChart,
+    21    Bar,
+    22    XAxis,
+    23    YAxis,
+    24    CartesianGrid,
+    25    Tooltip,
+    26    Legend,
+    27    ResponsiveContainer,
+    28    PieChart,
+    29    Pie,
+    30    Cell,
+    31  } from 'recharts';
+    32  import api from '../services/api';
+    33  import { useSelector } from 'react-redux';
+    34  import type { RootState } from '../store';
+    35  import {
+    36    TrendingUp as TrendingUpIcon,
+    37    AccountBalance as AccountBalanceIcon,
+    38    CalendarToday as CalendarTodayIcon,
+    39  } from '@mui/icons-material';
+    40  import { useTranslation } from 'react-i18next';
     41
-    42  async def total_revenue(db: AsyncSession, user):
-    43      data = await get_rental_data(db, user)
-    44      if data.empty:
-    45          return 0.0
-    46      return data['total_price'].sum()
-    47
-    48
-    49  async def revenue_growth_rate(db: AsyncSession, user):
-    50      data = await get_rental_data(db, user)
-    51      if data.empty:
-    52          return 0.0
-    53
-    54      data['year'] = data['start_date'].dt.year
-    55      yearly_revenue = data.groupby('year')['total_price'].sum()
-    56      growth_rate = yearly_revenue.pct_change().fillna(0) * 100
-    57
-    58      return growth_rate.to_dict()
+    42  interface RevenueData {
+    43    total_revenue: number;
+    44    monthly_revenue: number;
+    45    active_rentals: number;
+    46    revenue_by_warehouse: {
+    47      warehouse_name: string;
+    48      revenue: number;
+    49    }[];
+    50    revenue_by_month: {
+    51      month: string;
+    52      revenue: number;
+    53    }[];
+    54    revenue_by_service: {
+    55      service_name: string;
+    56      revenue: number;
+    57    }[];
+    58  }
     59
-    60
-    61  async def average_rental_duration(db: AsyncSession, user):
-    62      data = await get_rental_data(db, user)
-    63      if data.empty:
-    64          return 0.0
-    65      return (data['end_date'] - data['start_date']).dt.days.mean()
-    66
-    67
-    68  async def revenue_per_warehouse(db: AsyncSession, user):
-    69      data = await get_rental_data(db, user)
-    70      if data.empty:
-    71          return 0.0
-    72
-    73      revenue_per_warehouse = data.groupby(
-    74          'warehouse_id')['total_price'].sum().mean()
-    75      return revenue_per_warehouse
-    76
-    77
-    78  async def top_performing_warehouses(db: AsyncSession, user):
-    79      data = await get_rental_data(db, user)
-    80      if data.empty:
-    81          return []
-    82
-    83      top_warehouses = data.groupby('warehouse_id')[
-    84          'total_price'].sum().nlargest(5)
-    85      return top_warehouses.index.tolist()
-    86
-    87
-    88  async def generate_report(db: AsyncSession, user):
-    89      report = {
-    90          "total_revenue": await total_revenue(db, user),
-    91          "average_rental_duration": await average_rental_duration(db, user),
-    92          "revenue_per_warehouse": await revenue_per_warehouse(db, user),
-    93          "revenue_growth_rate": await revenue_growth_rate(db, user),
-    94          "top_performing_warehouses": await top_performing_warehouses(db, user),
-    95      }
-    96      return report
+    60  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+    61
+    62  const Revenue = () => {
+    63    const [revenueData, setRevenueData] = useState<RevenueData | null>(null);
+    64    const [loading, setLoading] = useState(true);
+    65    const [error, setError] = useState('');
+    66    const [timeRange, setTimeRange] = useState('month');
+    67    const { user } = useSelector((state: RootState) => state.auth);
+    68    const { t } = useTranslation();
+    69
+    70    useEffect(() => {
+    71      fetchRevenueData();
+    72    }, [timeRange]);
+    73
+    74    const fetchRevenueData = async () => {
+    75      try {
+    76        const response = await api.get(`/revenue/seller?time_range=${timeRange}`);
+    77        setRevenueData(response.data);
+    78      } catch (err: any) {
+    79        setError(err.response?.data?.message || 'Failed to fetch revenue data');
+    80      } finally {
+    81        setLoading(false);
+    82      }
+    83    };
+    84
+    85    if (!user || user.role !== 'seller') {
+    86      return (
+    87        <Container maxWidth="sm">
+    88          <Alert severity="error" sx={{ mt: 4 }}>
+    89            {t('access_denied')}
+    90          </Alert>
+    91        </Container>
+    92      );
+    93    }
+    94
+    95    if (loading) {
+    96      return (
+    97        <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+    98          <CircularProgress />
+    99        </Box>
+   100      );
+   101    }
+   102
+   103    if (!revenueData) {
+   104      return (
+   105        <Container maxWidth="sm">
+   106          <Alert severity="error" sx={{ mt: 4 }}>
+   107            {t('no_revenue_data')}
+   108          </Alert>
+   109        </Container>
+   110      );
+   111    }
+   112
+   113    return (
+   114      <Container maxWidth="lg" sx={{ mt: 6, mb: 6 }}>
+   115        <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+   116          <Typography variant="h4" component="h1">
+   117            {t('revenue_analytics')}
+   118          </Typography>
+   119          <FormControl sx={{ minWidth: 120 }}>
+   120            <InputLabel>{t('time_range')}</InputLabel>
+   121            <Select
+   122              value={timeRange}
+   123              label={t('time_range')}
+   124              onChange={(e) => setTimeRange(e.target.value)}
+   125            >
+   126              <MenuItem value="week">{t('last_week')}</MenuItem>
+   127              <MenuItem value="month">{t('last_month')}</MenuItem>
+   128              <MenuItem value="year">{t('last_year')}</MenuItem>
+   129            </Select>
+   130          </FormControl>
+   131        </Box>
+   132
+   133        {error && (
+   134          <Alert severity="error" sx={{ mb: 3 }}>
+   135            {error}
+   136          </Alert>
+   137        )}
+   138
+   139        <Grid container spacing={3} sx={{ mb: 4 }} direction="column">
+   140          <Grid item xs={12}>
+   141            <Card>
+   142              <CardContent>
+   143                <Box display="flex" alignItems="center" gap={2}>
+   144                  <AccountBalanceIcon color="primary" sx={{ fontSize: 40 }} />
+   145                  <Box>
+   146                    <Typography variant="h6" color="text.secondary">
+   147                      {t('total_revenue')}
+   148                    </Typography>
+   149                    <Typography variant="h4" color="primary">
+   150                      ${revenueData.total_revenue.toFixed(2)}
+   151                    </Typography>
+   152                  </Box>
+   153                </Box>
+   154              </CardContent>
+   155            </Card>
+   156          </Grid>
+   157          <Grid item xs={12}>
+   158            <Card>
+   159              <CardContent>
+   160                <Box display="flex" alignItems="center" gap={2}>
+   161                  <TrendingUpIcon color="primary" sx={{ fontSize: 40 }} />
+   162                  <Box>
+   163                    <Typography variant="h6" color="text.secondary">
+   164                      {t('monthly_revenue')}
+   165                    </Typography>
+   166                    <Typography variant="h4" color="primary">
+   167                      ${revenueData.monthly_revenue.toFixed(2)}
+   168                    </Typography>
+   169                  </Box>
+   170                </Box>
+   171              </CardContent>
+   172            </Card>
+   173          </Grid>
+   174          <Grid item xs={12}>
+   175            <Card>
+   176              <CardContent>
+   177                <Box display="flex" alignItems="center" gap={2}>
+   178                  <CalendarTodayIcon color="primary" sx={{ fontSize: 40 }} />
+   179                  <Box>
+   180                    <Typography variant="h6" color="text.secondary">
+   181                      {t('active_rentals')}
+   182                    </Typography>
+   183                    <Typography variant="h4" color="primary">
+   184                      {revenueData.active_rentals}
+   185                    </Typography>
+   186                  </Box>
+   187                </Box>
+   188              </CardContent>
+   189            </Card>
+   190          </Grid>
+   191        </Grid>
+   192
+   193        <Grid container spacing={3} direction="column">
+   194          <Grid item xs={12}>
+   195            <Paper sx={{ p: 3, minWidth: 320 }}>
+   196              <Typography variant="h6" gutterBottom>
+   197                {t('revenue_over_time')}
+   198              </Typography>
+   199              <Box sx={{ height: 400 }}>
+   200                {revenueData.revenue_by_month.length === 0 ? (
+   201                  <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+   202                    <Typography color="text.secondary">{t('no_data_available')}</Typography>
+   203                  </Box>
+   204                ) : (
+   205                  <ResponsiveContainer width="100%" height="100%">
+   206                    <LineChart data={revenueData.revenue_by_month}>
+   207                      <CartesianGrid strokeDasharray="3 3" />
+   208                      <XAxis dataKey="month" />
+   209                      <YAxis />
+   210                      <Tooltip />
+   211                      <Legend />
+   212                      <Line
+   213                        type="monotone"
+   214                        dataKey="revenue"
+   215                        stroke="#8884d8"
+   216                        name={t('total_revenue')}
+   217                      />
+   218                    </LineChart>
+   219                  </ResponsiveContainer>
+   220                )}
+   221              </Box>
+   222            </Paper>
+   223          </Grid>
+   224          <Grid item xs={12}>
+   225            <Paper sx={{ p: 3, minWidth: 320 }}>
+   226              <Typography variant="h6" gutterBottom>
+   227                {t('revenue_by_service')}
+   228              </Typography>
+   229              <Box sx={{ height: 400 }}>
+   230                {revenueData.revenue_by_service.length === 0 ? (
+   231                  <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+   232                    <Typography color="text.secondary">{t('no_data_available')}</Typography>
+   233                  </Box>
+   234                ) : (
+   235                  <ResponsiveContainer width="100%" height="100%">
+   236                    <PieChart>
+   237                      <Pie
+   238                        data={revenueData.revenue_by_service}
+   239                        dataKey="revenue"
+   240                        nameKey="service_name"
+   241                        cx="50%"
+   242                        cy="50%"
+   243                        outerRadius={100}
+   244                        label
+   245                      >
+   246                        {revenueData.revenue_by_service.map((entry, index) => (
+   247                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+   248                        ))}
+   249                      </Pie>
+   250                      <Tooltip />
+   251                      <Legend />
+   252                    </PieChart>
+   253                  </ResponsiveContainer>
+   254                )}
+   255              </Box>
+   256            </Paper>
+   257          </Grid>
+   258          <Grid item xs={12}>
+   259            <Paper sx={{ p: 3, minWidth: 320 }}>
+   260              <Typography variant="h6" gutterBottom>
+   261                {t('revenue_by_warehouse')}
+   262              </Typography>
+   263              <Box sx={{ height: 400 }}>
+   264                {revenueData.revenue_by_warehouse.length === 0 ? (
+   265                  <Box display="flex" alignItems="center" justifyContent="center" height="100%">
+   266                    <Typography color="text.secondary">{t('no_data_available')}</Typography>
+   267                  </Box>
+   268                ) : (
+   269                  <ResponsiveContainer width="100%" height="100%">
+   270                    <BarChart data={revenueData.revenue_by_warehouse}>
+   271                      <CartesianGrid strokeDasharray="3 3" />
+   272                      <XAxis dataKey="warehouse_name" />
+   273                      <YAxis />
+   274                      <Tooltip />
+   275                      <Legend />
+   276                      <Bar dataKey="revenue" fill="#8884d8" name={t('total_revenue')} />
+   277                    </BarChart>
+   278                  </ResponsiveContainer>
+   279                )}
+   280              </Box>
+   281            </Paper>
+   282          </Grid>
+   283        </Grid>
+   284      </Container>
+   285    );
+   286  };
 
 
-     В.2 Адміністрування бізнес-логіки системи.
-     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/user/resource.py
+     В.2 Адміністрування бізнес-логіки системи. 
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab3/pzpi-22-2-iuklenchuk-roman-lab3/frontend/src/pages/admin/AdminPanel.tsx
      
-           1  from sqlalchemy import select
-           2  from fastapi import APIRouter, Depends, HTTPException
-           3
-           4  from app.database import get_db
-           5  from app.utils.auth import Authorization
-           6  from app.resources._shared.query import update_model
-           7  from app.database.models import Warehouse, Rental, User, UserRole, Lock, RentalStatus
-           8
-           9  from .schemas import RentalResponseSchema, UserResponseSchema, UserUpdateSchema, LockResponseSchema
-          10
-          11
-          12  user_router = APIRouter(prefix="/users", tags=["users"])
-          13
-          14
-          15  @user_router.get("/my_rents", response_model=list[RentalResponseSchema])
-          16  async def get_my_rent(user=Depends(Authorization()), db=Depends(get_db)):
-          17      query = select(Rental).filter(Rental.user_id == user.id)
-          18      rental_result = await db.execute(query)
-          19      rentals = rental_result.scalars().all()
-          20
-          21      results = []
-          22      for rental in rentals:
-          23          warehouse_query = select(Warehouse).filter(
-          24              Warehouse.id == rental.warehouse_id)
-          25          warehouse_result = await db.execute(warehouse_query)
-          26          warehouse = warehouse_result.scalar_one_or_none()
-          27
-          28          results.append(
-          29              dict(
-          30                  id=rental.id,
-          31                  warehouse_name=warehouse.name,
-          32                  warehouse_location=warehouse.location,
-          33                  start_date=rental.start_date,
-          34                  end_date=rental.end_date,
-          35                  status=rental.status,
-          36                  total_price=rental.total_price
-          37              )
-          38          )
-          39
-          40      return results
-          41
-          42
-          43  @user_router.get("/my_rents/{rent_id}", response_model=RentalResponseSchema)
-          44  async def get_my_rent(rent_id: int, user=Depends(Authorization()), db=Depends(get_db)):
-          45      query = select(Rental).filter(Rental.id == rent_id)
-          46      rental_result = await db.execute(query)
-          47      rental = rental_result.scalar_one_or_none()
-          48
-          49      if not rental:
-          50          raise HTTPException(
-          51              status_code=404,
-          52              detail="Rental not found"
-          53          )
-          54
-          55      warehouse_query = select(Warehouse).filter(
-          56          Warehouse.id == rental.warehouse_id)
-          57      warehouse_result = await db.execute(warehouse_query)
-          58      warehouse = warehouse_result.scalar_one_or_none()
-          59
-          60      return dict(
-          61          id=rental.id,
-          62          warehouse_name=warehouse.name,
-          63          warehouse_location=warehouse.location,
-          64          start_date=rental.start_date,
-          65          end_date=rental.end_date,
-          66          status=rental.status,
-          67          total_price=rental.total_price
-          68      )
-          69
-          70
-          71  @user_router.get("/my_locks", response_model=list[LockResponseSchema])
-          72  async def get_my_locks(user=Depends(Authorization()), db=Depends(get_db)):
-          73      query = select(Rental).filter(Rental.user_id == user.id, Rental.status == RentalStatus.RESERVED)
-          74      rental_result = await db.execute(query)
-          75      rental = rental_result.scalars().all()
-          76      warehouse_ids = [rent.warehouse_id for rent in rental]
-          77      if not rental:
-          78          raise HTTPException(
-          79              status_code=404,
-          80              detail="Rental not found"
-          81          )
-          82
-          83      warehouse_query = select(Warehouse).filter(
-          84          Warehouse.id.in_(warehouse_ids))
-          85      warehouse_result = await db.execute(warehouse_query)
-          86      warehouse = warehouse_result.scalars().all()
-          87      warehouse_ids = [ware.id for ware in warehouse]
-          88      
-          89      lock_query = select(Lock).filter(Lock.warehouse_id.in_(warehouse_ids))
-          90      lock_result = await db.execute(lock_query)
-          91      locks = lock_result.scalars().all()
-          92
-          93      return locks
-          94
-          95
-          96  @user_router.put("/me", response_model=UserResponseSchema)
-          97  async def update_user_info(user_data: UserUpdateSchema, user=Depends(Authorization()), db=Depends(get_db)):
-          98      update_model(user, user_data.dict(exclude_unset=True))
-          99      await db.commit()
-         100      return user
-         101
+           1  import { useEffect, useState } from 'react';
+           2  import {
+           3    Container,
+           4    Typography,
+           5    Paper,
+           6    Box,
+           7    Button,
+           8    CircularProgress,
+           9    Alert,
+          10    Table,
+          11    TableBody,
+          12    TableCell,
+          13    TableContainer,
+          14    TableHead,
+          15    TableRow,
+          16  } from '@mui/material';
+          17  import api from '../../services/api';
+          18
+          19  interface User {
+          20    id: number;
+          21    username: string;
+          22    email: string;
+          23    role: string;
+          24    is_blocked?: boolean;
+          25  }
+          26
+          27  const AdminPanel = () => {
+          28    const [users, setUsers] = useState<User[]>([]);
+          29    const [loading, setLoading] = useState(true);
+          30    const [error, setError] = useState('');
+          31    const [blockLoading, setBlockLoading] = useState<number | null>(null);
+          32    const [success, setSuccess] = useState('');
+          33    const [backupLoading, setBackupLoading] = useState(false);
+          34
+          35    useEffect(() => {
+          36      fetchUsers();
+          37    }, []);
+          38
+          39    const fetchUsers = async () => {
+          40      setLoading(true);
+          41      setError('');
+          42      try {
+          43        const response = await api.get('/users/');
+          44        setUsers(response.data);
+          45      } catch (err: any) {
+          46        setError(err.response?.data?.message || 'Failed to fetch users');
+          47      } finally {
+          48        setLoading(false);
+          49      }
+          50    };
+          51
+          52    const handleBlockUser = async (userId: number) => {
+          53      setBlockLoading(userId);
+          54      setError('');
+          55      setSuccess('');
+          56      try {
+          57        await api.get(`/users/block_user?user_id=${userId}`);
+          58        setSuccess('User blocked successfully');
+          59        fetchUsers();
+          60      } catch (err: any) {
+          61        setError(err.response?.data?.message || 'Failed to block user');
+          62      } finally {
+          63        setBlockLoading(null);
+          64      }
+          65    };
+          66
+          67    const handleUnblockUser = async (userId: number) => {
+          68      setBlockLoading(userId);
+          69      setError('');
+          70      setSuccess('');
+          71      try {
+          72        await api.get(`/users/unblock_user?user_id=${userId}`);
+          73        setSuccess('User unblocked successfully');
+          74        fetchUsers();
+          75      } catch (err: any) {
+          76        setError(err.response?.data?.message || 'Failed to unblock user');
+          77      } finally {
+          78        setBlockLoading(null);
+          79      }
+          80    };
+          81
+          82    const handleDownloadBackup = async () => {
+          83      setBackupLoading(true);
+          84      setError('');
+          85      setSuccess('');
+          86      try {
+          87        const response = await api.get('/backup', { responseType: 'blob' });
+          88        const url = window.URL.createObjectURL(new Blob([response.data]));
+          89        const link = document.createElement('a');
+          90        link.href = url;
+          91        link.setAttribute('download', 'db_backup.zip');
+          92        document.body.appendChild(link);
+          93        link.click();
+          94        link.parentNode?.removeChild(link);
+          95        setSuccess('Backup downloaded successfully');
+          96      } catch (err: any) {
+          97        setError(err.response?.data?.message || 'Failed to download backup');
+          98      } finally {
+          99        setBackupLoading(false);
+         100      }
+         101    };
          102
-         103  @user_router.get("/me", response_model=UserResponseSchema)
-         104  async def get_user_info(user=Depends(Authorization()), db=Depends(get_db)):
-         105      return user
-         106
-         107
-         108  @user_router.get("/", response_model=list[UserResponseSchema])
-         109  async def get_all_users(db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
-         110      query = select(User)
-         111      result = await db.execute(query)
-         112      users = result.scalars().all()
-         113      return users
-         114
-         115
-         116  async def get_user_warehouses(db, user):
-         117      user_warehouses_query = select(Warehouse).filter(Warehouse.owned_by == user.id)
-         118      user_warehouses_result = await db.execute(user_warehouses_query)
-         119      user_warehouses = user_warehouses_result.scalars().all()
-         120      return user_warehouses
-         121
-         122
-         123  @user_router.get("/block_user", response_model=UserResponseSchema)
-         124  async def block_user(user_id: int, db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
-         125      query = select(User).filter(User.id == user_id)
-         126      result = await db.execute(query)
-         127      user = result.scalars().first()
-         128      
-         129      if not user:
-         130          raise HTTPException(
-         131              status_code=404,
-         132              detail="User not found"
-         133          )
-         134          
-         135      user.is_blocked = True
-         136      
-         137      user_warehouses = await get_user_warehouses(db, user)
-         138      for warehouse in user_warehouses:
-         139          warehouse.is_blocked = True
-         140      await db.commit()
-         141      return user
-         142
-         143
-         144  @user_router.get("/unblock_user", response_model=UserResponseSchema)
-         145  async def unblock_user(user_id: int, db=Depends(get_db), user=Depends(Authorization(allowed_roles=[UserRole.ADMIN]))):
-         146      query = select(User).filter(User.id == user_id)
-         147      result = await db.execute(query)
-         148      user = result.scalars().first()
-         149      
-         150      if not user:
-         151          raise HTTPException(
-         152              status_code=404,
-         153              detail="User not found"
-         154          )
-         155          
-         156      user.is_blocked = False
-         157      
-         158      user_warehouses = await get_user_warehouses(db, user)
-         159      for warehouse in user_warehouses:
-         160          warehouse.is_blocked = False
-         161      await db.commit()
-         162      return user
+         103    return (
+         104      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+         105        <Typography variant="h4" component="h1" gutterBottom>
+         106          Admin Panel
+         107        </Typography>
+         108        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+         109        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+         110        <Paper sx={{ p: 3, mb: 4 }}>
+         111          <Typography variant="h6" gutterBottom>
+         112            Download Database Backup
+         113          </Typography>
+         114          <Button
+         115            variant="contained"
+         116            color="secondary"
+         117            onClick={handleDownloadBackup}
+         118            disabled={backupLoading}
+         119          >
+         120            {backupLoading ? 'Downloading...' : 'Download Backup'}
+         121          </Button>
+         122        </Paper>
+         123        <Paper sx={{ p: 3 }}>
+         124          <Typography variant="h6" gutterBottom>
+         125            Users
+         126          </Typography>
+         127          {loading ? (
+         128            <Box display="flex" justifyContent="center" alignItems="center" minHeight="20vh">
+         129              <CircularProgress />
+         130            </Box>
+         131          ) : (
+         132            <TableContainer>
+         133              <Table>
+         134                <TableHead>
+         135                  <TableRow>
+         136                    <TableCell>ID</TableCell>
+         137                    <TableCell>Username</TableCell>
+         138                    <TableCell>Email</TableCell>
+         139                    <TableCell>Role</TableCell>
+         140                    <TableCell>Status</TableCell>
+         141                    <TableCell>Actions</TableCell>
+         142                  </TableRow>
+         143                </TableHead>
+         144                <TableBody>
+         145                  {users.map((user) => (
+         146                    <TableRow key={user.id}>
+         147                      <TableCell>{user.id}</TableCell>
+         148                      <TableCell>{user.username}</TableCell>
+         149                      <TableCell>{user.email}</TableCell>
+         150                      <TableCell>{user.role}</TableCell>
+         151                      <TableCell>{user.is_blocked ? 'Blocked' : 'Active'}</TableCell>
+         152                      <TableCell>
+         153                        {user.is_blocked ? (
+         154                          <Button
+         155                            variant="outlined"
+         156                            color="success"
+         157                            size="small"
+         158                            disabled={blockLoading === user.id}
+         159                            onClick={() => handleUnblockUser(user.id)}
+         160                          >
+         161                            {blockLoading === user.id ? 'Unblocking...' : 'Unblock'}
+         162                          </Button>
+         163                        ) : (
+         164                        <Button
+         165                          variant="outlined"
+         166                          color="error"
+         167                          size="small"
+         168                            disabled={blockLoading === user.id}
+         169                          onClick={() => handleBlockUser(user.id)}
+         170                        >
+         171                          {blockLoading === user.id ? 'Blocking...' : 'Block'}
+         172                        </Button>
+         173                        )}
+         174                      </TableCell>
+         175                    </TableRow>
+         176                  ))}
+         177                </TableBody>
+         178              </Table>
+         179            </TableContainer>
+         180          )}
+         181        </Paper>
+         182      </Container>
+         183    );
+         184  };
+         185
+         186  export default AdminPanel;
       
      В.3 Резервне копіювання користувацьких даних.
-     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab2/pzpi-22-2-iuklenchuk-roman-lab2/backend/app/resources/backup/resource.py
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab3/pzpi-22-2-iuklenchuk-roman-lab3/frontend/src/pages/admin/AdminPanel.tsx
      
-     1  from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-     2  from fastapi.responses import FileResponse
-     3  from sqlalchemy.ext.asyncio import AsyncSession
-     4  import os
-     5  import subprocess
-     6  from datetime import datetime
-     7  import os
-     8  import shutil
-     9  import subprocess
-    10
-    11
-    12  from app.database import get_db
-    13  from app.database.models import UserRole
-    14  from app.utils.auth import Authorization
-    15
-    16  backup_router = APIRouter()
-    17
-    18  @backup_router.get("/database")
-    19  async def backup_database(
-    20      db: AsyncSession = Depends(get_db),
-    21      user = Depends(Authorization(allowed_roles=[UserRole.ADMIN]))
-    22  ):
-    23      """
-    24      Create a database backup and return it as a file.
-    25      Only accessible by admin users.
-    26      """
-    27      try:
-    28          # Create backups directory if it doesn't exist
-    29          backup_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "backups")
-    30          os.makedirs(backup_dir, exist_ok=True)
-    31
-    32          # Generate backup filename with timestamp
-    33          timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    34          # Correct extension for custom format
-    35          backup_file = os.path.join(backup_dir, f"backup_{timestamp}.dump")
-    36
-    37
-    38          # Get database connection details from environment variables
-    39          db_name = os.getenv("POSTGRES_DB", "postgres")
-    40          db_user = os.getenv("POSTGRES_USER", "postgres")
-    41          db_password = os.getenv("POSTGRES_PASSWORD", "postgres")
-    42          db_host = os.getenv("POSTGRES_HOST", "localhost")
-    43          db_port = os.getenv("POSTGRES_PORT", "5432")
-    44
-    45          # Create backup using pg_dump
-    46          command = [
-    47              "pg_dump",
-    48              f"--dbname=postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}",
-    49              "-F", "c",  # Custom format
-    50              "-f", backup_file
-    51          ]
-    52
-    53          process = subprocess.Popen(
-    54              command,
-    55              stdout=subprocess.PIPE,
-    56              stderr=subprocess.PIPE
-    57          )
-    58          stdout, stderr = process.communicate()
-    59
-    60          if process.returncode != 0:
-    61              raise HTTPException(
-    62                  status_code=500,
-    63                  detail=f"Backup failed: {stderr.decode()}"
-    64              )
-    65          
-    66          # Validate backup file
-    67          validate_command = ["pg_restore", "-l", backup_file]
-    68          validate_proc = subprocess.run(
-    69              validate_command,
-    70              stdout=subprocess.PIPE,
-    71              stderr=subprocess.PIPE
-    72          )
-    73
-    74          if validate_proc.returncode != 0:
-    75              raise HTTPException(
-    76                  status_code=500,
-    77                  detail=f"Backup file validation failed: {validate_proc.stderr.decode()}"
-    78              )
-    79
-    80          # Return the backup file
-    81          return FileResponse(
-    82              backup_file,
-    83              media_type="application/octet-stream",
-    84              filename=f"backup_{timestamp}.dump"
-    85          )
-    86
-    87
-    88      except Exception as e:
-    89          raise HTTPException(
-    90              status_code=500,
-    91              detail=f"Backup failed: {str(e)}"
-    92          )
-      
+           1  import { useEffect, useState } from 'react';
+           2  import {
+           3    Container,
+           4    Typography,
+           5    Paper,
+           6    Box,
+           7    Button,
+           8    CircularProgress,
+           9    Alert,
+          10    Table,
+          11    TableBody,
+          12    TableCell,
+          13    TableContainer,
+          14    TableHead,
+          15    TableRow,
+          16  } from '@mui/material';
+          17  import api from '../../services/api';
+          18
+          19  interface User {
+          20    id: number;
+          21    username: string;
+          22    email: string;
+          23    role: string;
+          24    is_blocked?: boolean;
+          25  }
+          26
+          27  const AdminPanel = () => {
+          28    const [users, setUsers] = useState<User[]>([]);
+          29    const [loading, setLoading] = useState(true);
+          30    const [error, setError] = useState('');
+          31    const [blockLoading, setBlockLoading] = useState<number | null>(null);
+          32    const [success, setSuccess] = useState('');
+          33    const [backupLoading, setBackupLoading] = useState(false);
+          34
+          35    useEffect(() => {
+          36      fetchUsers();
+          37    }, []);
+          38
+          39    const fetchUsers = async () => {
+          40      setLoading(true);
+          41      setError('');
+          42      try {
+          43        const response = await api.get('/users/');
+          44        setUsers(response.data);
+          45      } catch (err: any) {
+          46        setError(err.response?.data?.message || 'Failed to fetch users');
+          47      } finally {
+          48        setLoading(false);
+          49      }
+          50    };
+          51
+          52    const handleBlockUser = async (userId: number) => {
+          53      setBlockLoading(userId);
+          54      setError('');
+          55      setSuccess('');
+          56      try {
+          57        await api.get(`/users/block_user?user_id=${userId}`);
+          58        setSuccess('User blocked successfully');
+          59        fetchUsers();
+          60      } catch (err: any) {
+          61        setError(err.response?.data?.message || 'Failed to block user');
+          62      } finally {
+          63        setBlockLoading(null);
+          64      }
+          65    };
+          66
+          67    const handleUnblockUser = async (userId: number) => {
+          68      setBlockLoading(userId);
+          69      setError('');
+          70      setSuccess('');
+          71      try {
+          72        await api.get(`/users/unblock_user?user_id=${userId}`);
+          73        setSuccess('User unblocked successfully');
+          74        fetchUsers();
+          75      } catch (err: any) {
+          76        setError(err.response?.data?.message || 'Failed to unblock user');
+          77      } finally {
+          78        setBlockLoading(null);
+          79      }
+          80    };
+          81
+          82    const handleDownloadBackup = async () => {
+          83      setBackupLoading(true);
+          84      setError('');
+          85      setSuccess('');
+          86      try {
+          87        const response = await api.get('/backup', { responseType: 'blob' });
+          88        const url = window.URL.createObjectURL(new Blob([response.data]));
+          89        const link = document.createElement('a');
+          90        link.href = url;
+          91        link.setAttribute('download', 'db_backup.zip');
+          92        document.body.appendChild(link);
+          93        link.click();
+          94        link.parentNode?.removeChild(link);
+          95        setSuccess('Backup downloaded successfully');
+          96      } catch (err: any) {
+          97        setError(err.response?.data?.message || 'Failed to download backup');
+          98      } finally {
+          99        setBackupLoading(false);
+         100      }
+         101    };
+         102
+         103    return (
+         104      <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+         105        <Typography variant="h4" component="h1" gutterBottom>
+         106          Admin Panel
+         107        </Typography>
+         108        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+         109        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+         110        <Paper sx={{ p: 3, mb: 4 }}>
+         111          <Typography variant="h6" gutterBottom>
+         112            Download Database Backup
+         113          </Typography>
+         114          <Button
+         115            variant="contained"
+         116            color="secondary"
+         117            onClick={handleDownloadBackup}
+         118            disabled={backupLoading}
+         119          >
+         120            {backupLoading ? 'Downloading...' : 'Download Backup'}
+         121          </Button>
+         122        </Paper>
+         123        <Paper sx={{ p: 3 }}>
+         124          <Typography variant="h6" gutterBottom>
+         125            Users
+         126          </Typography>
+         127          {loading ? (
+         128            <Box display="flex" justifyContent="center" alignItems="center" minHeight="20vh">
+         129              <CircularProgress />
+         130            </Box>
+         131          ) : (
+         132            <TableContainer>
+         133              <Table>
+         134                <TableHead>
+         135                  <TableRow>
+         136                    <TableCell>ID</TableCell>
+         137                    <TableCell>Username</TableCell>
+         138                    <TableCell>Email</TableCell>
+         139                    <TableCell>Role</TableCell>
+         140                    <TableCell>Status</TableCell>
+         141                    <TableCell>Actions</TableCell>
+         142                  </TableRow>
+         143                </TableHead>
+         144                <TableBody>
+         145                  {users.map((user) => (
+         146                    <TableRow key={user.id}>
+         147                      <TableCell>{user.id}</TableCell>
+         148                      <TableCell>{user.username}</TableCell>
+         149                      <TableCell>{user.email}</TableCell>
+         150                      <TableCell>{user.role}</TableCell>
+         151                      <TableCell>{user.is_blocked ? 'Blocked' : 'Active'}</TableCell>
+         152                      <TableCell>
+         153                        {user.is_blocked ? (
+         154                          <Button
+         155                            variant="outlined"
+         156                            color="success"
+         157                            size="small"
+         158                            disabled={blockLoading === user.id}
+         159                            onClick={() => handleUnblockUser(user.id)}
+         160                          >
+         161                            {blockLoading === user.id ? 'Unblocking...' : 'Unblock'}
+         162                          </Button>
+         163                        ) : (
+         164                        <Button
+         165                          variant="outlined"
+         166                          color="error"
+         167                          size="small"
+         168                            disabled={blockLoading === user.id}
+         169                          onClick={() => handleBlockUser(user.id)}
+         170                        >
+         171                          {blockLoading === user.id ? 'Blocking...' : 'Block'}
+         172                        </Button>
+         173                        )}
+         174                      </TableCell>
+         175                    </TableRow>
+         176                  ))}
+         177                </TableBody>
+         178              </Table>
+         179            </TableContainer>
+         180          )}
+         181        </Paper>
+         182      </Container>
+         183    );
+         184  };
+         185
+         186  export default AdminPanel;
