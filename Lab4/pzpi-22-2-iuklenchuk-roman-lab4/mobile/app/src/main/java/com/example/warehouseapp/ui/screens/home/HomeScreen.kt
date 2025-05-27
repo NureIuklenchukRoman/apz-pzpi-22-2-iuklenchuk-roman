@@ -10,13 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.graphics.vector.ImageVector
+import kotlinx.coroutines.launch
 
 import com.example.warehouseapp.TokenManager
+import com.example.warehouseapp.api.RetrofitClient
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     var selectedItem by remember { mutableStateOf("home") }
     val userRole = remember { mutableStateOf<String?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         userRole.value = TokenManager.getUserRole()
@@ -36,7 +40,7 @@ fun HomeScreen(navController: NavController) {
                 "warehouses" to Icons.Default.Storage,
                 "messages" to Icons.Default.Message,
                 "my-rents" to Icons.Default.ShoppingCart,
-                "revenue"  to Icons.Default.ShoppingCart
+                "revenue"  to Icons.Default.AttachMoney
             )
         } else {
             listOf(
@@ -57,6 +61,21 @@ fun HomeScreen(navController: NavController) {
         "revenue" to "Revenue"
     )
 
+    fun handleLogout() {
+        coroutineScope.launch {
+            // Clear the token from TokenManager
+            TokenManager.clearToken()
+
+            // Clear the token from RetrofitClient
+            RetrofitClient.updateAccessToken(null)
+
+            // Navigate to login screen and clear the back stack
+            navController.navigate("login") {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -67,6 +86,9 @@ fun HomeScreen(navController: NavController) {
                     }
                     IconButton(onClick = { navController.navigate("profile") }) {
                         Icon(Icons.Default.Person, contentDescription = "Profile")
+                    }
+                    IconButton(onClick = { handleLogout() }) {
+                        Icon(Icons.Default.ExitToApp, contentDescription = "Logout")
                     }
                 }
             )
@@ -110,6 +132,22 @@ fun HomeScreen(navController: NavController) {
                 text = "Manage your warehouses and services efficiently",
                 style = MaterialTheme.typography.bodyLarge
             )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Alternative logout button in the main content area
+            OutlinedButton(
+                onClick = { handleLogout() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    Icons.Default.ExitToApp,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Logout")
+            }
         }
     }
 }

@@ -49,13 +49,12 @@ fun RevenueScreen(navController: NavController) {
     if (userRole.value != "seller") {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(
-                text = "Denied",
+                text = "Access Denied",
                 color = MaterialTheme.colorScheme.error
             )
         }
         return
     }
-
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -64,23 +63,34 @@ fun RevenueScreen(navController: NavController) {
     var error by remember { mutableStateOf<String?>(null) }
     var selectedRange by remember { mutableStateOf("month") }
     val ApiService = RetrofitClient.apiService
-    LaunchedEffect(selectedRange) {
-        loading = true
-        error = null
-        try {
-            val response = ApiService.getRevenue()
-            if (response.isSuccessful) {
-                revenueData = response.body()
-                Log.d("Login", "Received data from backend: ${revenueData}")
 
-            } else {
-                error = response.errorBody()?.string() ?: "Error"
+    // Function to fetch revenue data with selected time range
+    fun fetchRevenueData(timeRange: String) {
+        coroutineScope.launch {
+            loading = true
+            error = null
+            try {
+                Log.d("RevenueScreen", "Fetching revenue data for time range: $timeRange")
+                val response = ApiService.getRevenue(timeRange)
+                if (response.isSuccessful) {
+                    revenueData = response.body()
+                    Log.d("RevenueScreen", "Received data from backend: ${revenueData}")
+                } else {
+                    error = response.errorBody()?.string() ?: "Error fetching data"
+                    Log.e("RevenueScreen", "API Error: ${response.code()} - ${response.message()}")
+                }
+            } catch (e: Exception) {
+                error = e.message ?: "Network error occurred"
+                Log.e("RevenueScreen", "Exception: ${e.message}", e)
+            } finally {
+                loading = false
             }
-        } catch (e: Exception) {
-            error = e.message ?: "Fetching error"
-        } finally {
-            loading = false
         }
+    }
+
+    // Initial data fetch and refetch when selectedRange changes
+    LaunchedEffect(selectedRange) {
+        fetchRevenueData(selectedRange)
     }
 
     if (loading) {
@@ -89,7 +99,17 @@ fun RevenueScreen(navController: NavController) {
         }
     } else if (error != null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(text = error ?: "", color = MaterialTheme.colorScheme.error)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = error ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = { fetchRevenueData(selectedRange) }) {
+                    Text("Retry")
+                }
+            }
         }
     } else {
         revenueData?.let { data ->
@@ -101,35 +121,55 @@ fun RevenueScreen(navController: NavController) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Revenue analytics",
+                            text = "Revenue Analytics",
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold
                         )
-                        TimeRangeDropdown(selectedRange) { selectedRange = it }
+                        TimeRangeDropdown(selectedRange) { newRange ->
+                            selectedRange = newRange
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+
+                    // Display current time range
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ) {
+                        Text(
+                            text = "Showing data for: ${selectedRange.uppercase()}",
+                            modifier = Modifier.padding(12.dp),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     StatCard(
                         icon = Icons.Default.Money,
-                        title = "total revenue",
+                        title = "Total Revenue",
                         value = "$%.2f".format(data.total_revenue)
                     )
                     StatCard(
                         icon = Icons.Default.TrendingUp,
-                        title = "Monthlky revenue",
+                        title = "Monthly Revenue",
                         value = "$%.2f".format(data.monthly_revenue)
                     )
                     StatCard(
                         icon = Icons.Default.CalendarToday,
-                        title = "Active rentals",
+                        title = "Active Rentals",
                         value = data.active_rentals.toString()
                     )
                 }
 
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text(" revenue over time", fontWeight = FontWeight.Bold)
+                    Text("Revenue Over Time", fontWeight = FontWeight.Bold)
                     if (data.revenue_by_month.isEmpty()) {
-                        Text("No Data available", color = Color.Gray)
+                        Text("No data available", color = Color.Gray)
                     } else {
                         LineChartComponent(data = data.revenue_by_month
                             .filter { !it.month.isNullOrEmpty() }
@@ -137,12 +177,11 @@ fun RevenueScreen(navController: NavController) {
                     }
                 }
 
-
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text("Revenue by warehouse", fontWeight = FontWeight.Bold)
+                    Text("Revenue by Warehouse", fontWeight = FontWeight.Bold)
                     if (data.revenue_by_warehouse.isEmpty()) {
-                        Text("No Data available", color = Color.Gray)
+                        Text("No data available", color = Color.Gray)
                     } else {
                         BarChartComponent(data = data.revenue_by_warehouse
                             .filter { !it.warehouse_name.isNullOrEmpty() }
@@ -153,8 +192,6 @@ fun RevenueScreen(navController: NavController) {
         }
     }
 }
-
-
 
 @Composable
 fun StatCard(icon: ImageVector, title: String, value: String) {
@@ -170,31 +207,34 @@ fun StatCard(icon: ImageVector, title: String, value: String) {
     }
 }
 
-
 @Composable
 fun TimeRangeDropdown(selected: String, onChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
+    val options = listOf("week", "month", "year")
+
     Box {
         OutlinedButton(onClick = { expanded = true }) {
             Text(selected.uppercase())
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                Icons.Default.CalendarToday,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp)
+            )
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(text = { Text("Week") }, onClick = {
-                onChange("week")
-                expanded = false
-            })
-            DropdownMenuItem(text = { Text("Month") }, onClick = {
-                onChange("month")
-                expanded = false
-            })
-            DropdownMenuItem(text = { Text("Year") }, onClick = {
-                onChange("year")
-                expanded = false
-            })
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option.uppercase()) },
+                    onClick = {
+                        onChange(option)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
-
 
 @Composable
 fun BarChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
@@ -207,7 +247,7 @@ fun BarChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)  // Set height as needed
+            .height(300.dp)
     ) { chart ->
         val entries = data.entries.mapIndexed { index, entry ->
             BarEntry(index.toFloat(), entry.value)
@@ -242,7 +282,7 @@ fun LineChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) 
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)  // Set height
+            .height(300.dp)
     ) { chart ->
         val entries = data.entries.mapIndexed { index, entry ->
             Entry(index.toFloat(), entry.value)
@@ -282,7 +322,7 @@ fun PieChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)  // Set height
+            .height(300.dp)
     ) { chart ->
         val entries = data.entries.map { PieEntry(it.value, it.key) }
         val dataSet = PieDataSet(entries, "Revenue by Service")

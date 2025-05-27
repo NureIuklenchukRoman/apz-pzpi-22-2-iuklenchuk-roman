@@ -112,8 +112,7 @@ interface ApiService {
   suspend fun getMessages(): Response<List<Message>>
 
   @GET("revenue/seller")
-  suspend fun getRevenue(): Response<RevenueData>
-
+  suspend fun getRevenue(@Query("time_range") timeRange: String = "month"): Response<RevenueData>
 
 
 }

@@ -72,6 +72,7 @@ fun RentalsScreen(
                 if (response.isSuccessful) {
                     rentError = null
                     showDialog = false
+                    navController.navigate("home")
                     // maybe navigate back or show success message
                 } else {
                     rentError = "Rent failed: ${response.code()}"
@@ -104,20 +105,10 @@ fun RentalsScreen(
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        if (isLoading) {
-            CircularProgressIndicator()
-        } else if (errorMessage != null) {
-            Text("Error: $errorMessage")
-        } else {
-            Button(
-                onClick = { showDialog = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Rent This Warehouse")
-            }
 
-            if (showDialog) {
+
                 RentDialog(
+                    navController = navController,
                     services = services,
                     onDismiss = { showDialog = false },
                     onSubmit = { start, end, selectedServices ->
@@ -125,13 +116,14 @@ fun RentalsScreen(
                         showDialog = false
                     }
                 )
-            }
-        }
+
+
     }
 }
 
 @Composable
 fun RentDialog(
+    navController: NavController,
     services: List<PremiumService>,
     onDismiss: () -> Unit,
     onSubmit: (start: LocalDate, end: LocalDate, selectedServices: List<Int>) -> Unit
@@ -156,7 +148,7 @@ fun RentDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { navController.navigate("warehouses") }) {
                 Text("Cancel")
             }
         },

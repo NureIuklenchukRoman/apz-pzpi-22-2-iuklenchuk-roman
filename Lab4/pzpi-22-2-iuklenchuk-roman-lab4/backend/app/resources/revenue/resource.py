@@ -16,7 +16,8 @@ async def get_seller_revenue(
     user = Depends(Authorization(allowed_roles=[UserRole.SELLER]))
 ):
     check_if_user_blocked(user)
-    
+    print(f"\033[31m{time_range}\033[0m")
+
     # Calculate date range based on time_range parameter
     end_date = datetime.now()
     if time_range == "week":
@@ -33,6 +34,9 @@ async def get_seller_revenue(
     warehouses_result = await db.execute(warehouses_query)
     warehouses = warehouses_result.scalars().all()
     warehouse_ids = [w.id for w in warehouses]
+    print(f"\033[31m{start_date}\033[0m")
+    print(f"\033[31m{end_date}\033[0m")
+
 
     # Get total revenue
     total_revenue_query = select(func.sum(Rental.total_price)).filter(
