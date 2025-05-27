@@ -1,0 +1,955 @@
+﻿Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+Кафедра програмної інженерії
+
+Звіт
+З лабораторної роботи №4
+З дисципліни «Архітектура програмного забезпечення»
+на тему: «РОЗРОБКА МОБІЛЬНОГО КЛІЄНТА СИСТЕМИ»
+
+Виконавець:		
+ст. гр. ПЗПІ-22-2						                    Юкленчук Р. О. 
+
+Перевірив:		
+ст. викладач кафедри ПІ				                    Сокорчук І. П. 
+	
+
+
+                                                                                                       
+
+
+
+
+
+
+
+
+
+Харків 2025
+
+1 ІСТОРІЯ ЗМІН
+
+№ДатаВерсія звітуОпис змін та виправлень123.05.20250.1Створено структуру звіту. Визначено завдання на лабораторну роботу226.05.20250.1Описано хід роботи, додаток А, додаток Б, додаток В. Сформульовано висновок роботи
+2 ЗАВДАННЯ
+
+     Метою даного лабораторного заняття є розробка мобільної / mobile частини програмної системи.
+     
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+
+     
+     До виконаної роботи було створено відеозвіт, посилання на який наведено у додатку А.
+     Усі графічні матеріали наведені у додатку Б. 
+     У рамках виконання завдання було розроблено клієнтську частину мобільного додатку для платформи Android з використанням мови програмування Kotlin, що забезпечило створення інтерактивного та функціонального інтерфейсу. Робота розпочалася з ініціалізації проєкту в Android Studio, під час якої було налаштовано базову навігацію через Jetpack Navigation Component та основні залежності, такі як Retrofit для роботи з API та Jetpack Compose для створення UI.
+     Надалі було створено набір екранів, таких як головний екран, екрани авторизації та реєстрації, а також екрани для управління складами, адміністрування бази даних, системного адміністрування та платформного адміністрування, що разом сформували цілісну систему для взаємодії користувача з додатком.
+     Основна увага під час розробки була зосереджена на забезпеченні зручності та інтуїтивності інтерфейсу, а також на реалізації ключових функціональних можливостей. Для цього використано бібліотеку MPAndroidChart для створення графіків та кастомні composable-компоненти для таблиць і рекомендацій. Окремо реалізовано функціонал адміністрування, який дозволяє управляти користувачами, створювати та відновлювати резервні копії бази даних. Для забезпечення коректної роботи використано глобальний стан через ViewModel та Jetpack Compose State, що дало змогу ефективно керувати даними між екранами.
+          Для забезпечення візуальної привабливості та зручності використання було розроблено стилі з використанням Jetpack Compose theming та Material Design 3. Стилі були створені з акцентом на сучасний дизайн, адаптивність для різних розмірів екранів та єдність стилістичного оформлення. У результаті виконаної роботи було створено функціональний мобільний додаток із зручним інтерфейсом, підтримкою локалізації та можливостями адміністрування, що відповідає поставленим вимогам.
+     Деякий код застосунку наведено у додатку В..
+     
+ВИСНОВКИ
+
+     У результаті виконання даної лабораторної роботи було розроблено клієнтську частину мобільного додатку для платформи Android на базі Kotlin, що включає зручний інтерфейс для взаємодії з користувачами. Створено ключові екрани, зокрема головний, авторизацію, реєстрацію, а також панелі адміністрування. 
+
+
+
+
+ДОДАТОК А
+Відеозапис
+
+     Відеозапис презентації результатів лабораторної роботи: https://youtu.be/3lXDPuTgIK0
+
+Хронологічний опис відеозапису: 
+00:00 Вітання. Мовець вітається та визначає тему відеозвіту. 
+00:15 Загальний функціонал. 
+Демострується загальний функціонал. Операції над об’єктами системи. 02:18 Функції бізнес логіки. Аналітика Доходу складів. 
+03:00 Функції адміністратора. 
+03:30 Кінець доповіді.
+ДОДАТОК Б
+Графічні матеріали
+
+
+
+Рисунок Б.1 — ER-діаграма даних
+
+
+Рисунок Б.2 — Структура бази даних
+
+Рисунок Б.3 — UML-діаграма прецедентів
+
+
+
+
+
+
+ДОДАТОК В
+Програмний код
+
+     В.1 Математична обробка прикладних даних.
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab4/pzpi-22-2-iuklenchuk-roman-lab4/mobile/app/src/main/java/com/example/warehouseapp/ui/screens/warehouses/RevenueScreen.kt
+
+          1. package com.example.warehouseapp.ui.screens.warehouses
+2. import androidx.compose.ui.graphics.vector.ImageVector
+3. 
+4. import androidx.compose.runtime.Composable
+5. import androidx.compose.ui.Modifier
+6. import androidx.compose.ui.viewinterop.AndroidView
+7. import com.github.mikephil.charting.charts.BarChart
+8. import com.github.mikephil.charting.charts.LineChart
+9. import com.github.mikephil.charting.charts.PieChart
+10. import com.github.mikephil.charting.data.*
+11. import androidx.compose.foundation.layout.*
+12. import androidx.compose.foundation.lazy.LazyColumn
+13. import androidx.compose.material.icons.Icons
+14. import androidx.compose.material.icons.filled.CalendarToday
+15. import androidx.compose.material.icons.filled.Money
+16. import androidx.compose.material.icons.filled.TrendingUp
+17. import androidx.compose.material3.*
+18. import androidx.compose.runtime.*
+19. import androidx.compose.ui.Alignment
+20. import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+21. 
+22. import androidx.compose.ui.graphics.Color
+23. import androidx.compose.ui.platform.LocalContext
+24. import androidx.compose.ui.res.stringResource
+25. import androidx.compose.ui.text.font.FontWeight
+26. import androidx.compose.ui.unit.dp
+27. import com.example.warehouseapp.R
+28. import com.example.warehouseapp.data.RevenueData
+29. import com.example.warehouseapp.api.RetrofitClient
+30. import androidx.navigation.NavController
+31. 
+32. import com.github.mikephil.charting.data.BarData
+33. import com.github.mikephil.charting.data.BarDataSet
+34. import com.github.mikephil.charting.data.BarEntry
+35. import android.util.Log
+36. 
+37. import kotlinx.coroutines.launch
+38. import com.example.warehouseapp.TokenManager
+39. 
+40. @Composable
+41. fun RevenueScreen(navController: NavController) {
+42. 
+43.     val userRole = remember { mutableStateOf<String?>(null) }
+44. 
+45.     LaunchedEffect(Unit) {
+46.         userRole.value = TokenManager.getUserRole()
+47.     }
+48. 
+49.     if (userRole.value != "seller") {
+50.         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+51.             Text(
+52.                 text = "Access Denied",
+53.                 color = MaterialTheme.colorScheme.error
+54.             )
+55.         }
+56.         return
+57.     }
+58. 
+59.     val coroutineScope = rememberCoroutineScope()
+60.     val context = LocalContext.current
+61.     var revenueData by remember { mutableStateOf<RevenueData?>(null) }
+62.     var loading by remember { mutableStateOf(true) }
+63.     var error by remember { mutableStateOf<String?>(null) }
+64.     var selectedRange by remember { mutableStateOf("month") }
+65.     val ApiService = RetrofitClient.apiService
+66. 
+67.     // Function to fetch revenue data with selected time range
+68.     fun fetchRevenueData(timeRange: String) {
+69.         coroutineScope.launch {
+70.             loading = true
+71.             error = null
+72.             try {
+73.                 Log.d("RevenueScreen", "Fetching revenue data for time range: $timeRange")
+74.                 val response = ApiService.getRevenue(timeRange)
+75.                 if (response.isSuccessful) {
+76.                     revenueData = response.body()
+77.                     Log.d("RevenueScreen", "Received data from backend: ${revenueData}")
+78.                 } else {
+79.                     error = response.errorBody()?.string() ?: "Error fetching data"
+80.                     Log.e("RevenueScreen", "API Error: ${response.code()} - ${response.message()}")
+81.                 }
+82.             } catch (e: Exception) {
+83.                 error = e.message ?: "Network error occurred"
+84.                 Log.e("RevenueScreen", "Exception: ${e.message}", e)
+85.             } finally {
+86.                 loading = false
+87.             }
+88.         }
+89.     }
+90. 
+91.     // Initial data fetch and refetch when selectedRange changes
+92.     LaunchedEffect(selectedRange) {
+93.         fetchRevenueData(selectedRange)
+94.     }
+95. 
+96.     if (loading) {
+97.         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+98.             CircularProgressIndicator()
+99.         }
+100.     } else if (error != null) {
+101.         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+102.             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+103.                 Text(
+104.                     text = error ?: "",
+105.                     color = MaterialTheme.colorScheme.error,
+106.                     style = MaterialTheme.typography.bodyMedium
+107.                 )
+108.                 Spacer(modifier = Modifier.height(16.dp))
+109.                 Button(onClick = { fetchRevenueData(selectedRange) }) {
+110.                     Text("Retry")
+111.                 }
+112.             }
+113.         }
+114.     } else {
+115.         revenueData?.let { data ->
+116.             LazyColumn(modifier = Modifier.padding(16.dp)) {
+117.                 item {
+118.                     Row(
+119.                         modifier = Modifier.fillMaxWidth(),
+120.                         horizontalArrangement = Arrangement.SpaceBetween,
+121.                         verticalAlignment = Alignment.CenterVertically
+122.                     ) {
+123.                         Text(
+124.                             text = "Revenue Analytics",
+125.                             style = MaterialTheme.typography.headlineSmall,
+126.                             fontWeight = FontWeight.Bold
+127.                         )
+128.                         TimeRangeDropdown(selectedRange) { newRange ->
+129.                             selectedRange = newRange
+130.                         }
+131.                     }
+132.                     Spacer(modifier = Modifier.height(16.dp))
+133. 
+134.                     // Display current time range
+135.                     Card(
+136.                         modifier = Modifier.fillMaxWidth(),
+137.                         colors = CardDefaults.cardColors(
+138.                             containerColor = MaterialTheme.colorScheme.primaryContainer
+139.                         )
+140.                     ) {
+141.                         Text(
+142.                             text = "Showing data for: ${selectedRange.uppercase()}",
+143.                             modifier = Modifier.padding(12.dp),
+144.                             style = MaterialTheme.typography.bodyMedium,
+145.                             color = MaterialTheme.colorScheme.onPrimaryContainer
+146.                         )
+147.                     }
+148. 
+149.                     Spacer(modifier = Modifier.height(16.dp))
+150. 
+151.                     StatCard(
+152.                         icon = Icons.Default.Money,
+153.                         title = "Total Revenue",
+154.                         value = "$%.2f".format(data.total_revenue)
+155.                     )
+156.                     StatCard(
+157.                         icon = Icons.Default.TrendingUp,
+158.                         title = "Monthly Revenue",
+159.                         value = "$%.2f".format(data.monthly_revenue)
+160.                     )
+161.                     StatCard(
+162.                         icon = Icons.Default.CalendarToday,
+163.                         title = "Active Rentals",
+164.                         value = data.active_rentals.toString()
+165.                     )
+166.                 }
+167. 
+168.                 item {
+169.                     Spacer(modifier = Modifier.height(24.dp))
+170.                     Text("Revenue Over Time", fontWeight = FontWeight.Bold)
+171.                     if (data.revenue_by_month.isEmpty()) {
+172.                         Text("No data available", color = Color.Gray)
+173.                     } else {
+174.                         LineChartComponent(data = data.revenue_by_month
+175.                             .filter { !it.month.isNullOrEmpty() }
+176.                             .associate { it.month to it.revenue.toFloat() })
+177.                     }
+178.                 }
+179. 
+180.                 item {
+181.                     Spacer(modifier = Modifier.height(24.dp))
+182.                     Text("Revenue by Warehouse", fontWeight = FontWeight.Bold)
+183.                     if (data.revenue_by_warehouse.isEmpty()) {
+184.                         Text("No data available", color = Color.Gray)
+185.                     } else {
+186.                         BarChartComponent(data = data.revenue_by_warehouse
+187.                             .filter { !it.warehouse_name.isNullOrEmpty() }
+188.                             .associate { it.warehouse_name to it.revenue.toFloat() })
+189.                     }
+190.                 }
+191.             }
+192.         }
+193.     }
+194. }
+195. 
+196. @Composable
+197. fun StatCard(icon: ImageVector, title: String, value: String) {
+198.     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+199.         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+200.             Icon(icon, contentDescription = title, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(40.dp))
+201.             Spacer(modifier = Modifier.width(16.dp))
+202.             Column {
+203.                 Text(title, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+204.                 Text(value, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+205.             }
+206.         }
+207.     }
+208. }
+209. 
+210. @Composable
+211. fun TimeRangeDropdown(selected: String, onChange: (String) -> Unit) {
+212.     var expanded by remember { mutableStateOf(false) }
+213.     val options = listOf("week", "month", "year")
+214. 
+215.     Box {
+216.         OutlinedButton(onClick = { expanded = true }) {
+217.             Text(selected.uppercase())
+218.             Spacer(modifier = Modifier.width(4.dp))
+219.             Icon(
+220.                 Icons.Default.CalendarToday,
+221.                 contentDescription = null,
+222.                 modifier = Modifier.size(16.dp)
+223.             )
+224.         }
+225.         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+226.             options.forEach { option ->
+227.                 DropdownMenuItem(
+228.                     text = { Text(option.uppercase()) },
+229.                     onClick = {
+230.                         onChange(option)
+231.                         expanded = false
+232.                     }
+233.                 )
+234.             }
+235.         }
+236.     }
+237. }
+238. 
+239. @Composable
+240. fun BarChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
+241.     AndroidView(
+242.         factory = { context ->
+243.             BarChart(context).apply {
+244.                 description.isEnabled = false
+245.                 legend.isEnabled = false
+246.             }
+247.         },
+248.         modifier = modifier
+249.             .fillMaxWidth()
+250.             .height(300.dp)
+251.     ) { chart ->
+252.         val entries = data.entries.mapIndexed { index, entry ->
+253.             BarEntry(index.toFloat(), entry.value)
+254.         }
+255.         val dataSet = BarDataSet(entries, "Revenue by Warehouse")
+256.         dataSet.color = android.graphics.Color.BLUE
+257.         val barData = BarData(dataSet)
+258.         barData.barWidth = 0.9f
+259. 
+260.         chart.data = barData
+261.         chart.xAxis.apply {
+262.             granularity = 1f
+263.             setDrawLabels(true)
+264.             valueFormatter = IndexAxisValueFormatter(data.keys.toList())
+265.             setDrawGridLines(false)
+266.             position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+267.         }
+268.         chart.axisLeft.axisMinimum = 0f
+269.         chart.axisRight.isEnabled = false
+270.         chart.invalidate()
+271.     }
+272. }
+273. 
+274. @Composable
+275. fun LineChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
+276.     AndroidView(
+277.         factory = { context ->
+278.             LineChart(context).apply {
+279.                 description.isEnabled = false
+280.                 legend.isEnabled = false
+281.             }
+282.         },
+283.         modifier = modifier
+284.             .fillMaxWidth()
+285.             .height(300.dp)
+286.     ) { chart ->
+287.         val entries = data.entries.mapIndexed { index, entry ->
+288.             Entry(index.toFloat(), entry.value)
+289.         }
+290.         val dataSet = LineDataSet(entries, "Revenue Over Time")
+291.         dataSet.color = android.graphics.Color.RED
+292.         dataSet.setDrawCircles(true)
+293.         dataSet.lineWidth = 2f
+294. 
+295.         val lineData = LineData(dataSet)
+296. 
+297.         chart.data = lineData
+298.         chart.xAxis.apply {
+299.             granularity = 1f
+300.             setDrawLabels(true)
+301.             valueFormatter = IndexAxisValueFormatter(data.keys.toList())
+302.             setDrawGridLines(false)
+303.             position = com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
+304.         }
+305.         chart.axisLeft.axisMinimum = 0f
+306.         chart.axisRight.isEnabled = false
+307.         chart.invalidate()
+308.     }
+309. }
+310. 
+311. @Composable
+312. fun PieChartComponent(data: Map<String, Float>, modifier: Modifier = Modifier) {
+313.     AndroidView(
+314.         factory = { context ->
+315.             PieChart(context).apply {
+316.                 description.isEnabled = false
+317.                 isDrawHoleEnabled = true
+318.                 setUsePercentValues(true)
+319.                 setEntryLabelColor(android.graphics.Color.BLACK)
+320.                 legend.isEnabled = true
+321.             }
+322.         },
+323.         modifier = modifier
+324.             .fillMaxWidth()
+325.             .height(300.dp)
+326.     ) { chart ->
+327.         val entries = data.entries.map { PieEntry(it.value, it.key) }
+328.         val dataSet = PieDataSet(entries, "Revenue by Service")
+329.         dataSet.colors = listOf(
+330.             android.graphics.Color.BLUE,
+331.             android.graphics.Color.RED,
+332.             android.graphics.Color.GREEN,
+333.             android.graphics.Color.YELLOW,
+334.             android.graphics.Color.MAGENTA
+335.         )
+336.         val pieData = PieData(dataSet)
+337.         pieData.setValueTextSize(12f)
+338.         pieData.setValueTextColor(android.graphics.Color.BLACK)
+339. 
+340.         chart.data = pieData
+341.         chart.invalidate()
+342.     }
+343. };
+
+
+     В.2 Адміністрування бізнес-логіки системи. 
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab4/pzpi-22-2-iuklenchuk-roman-lab4/mobile/app/src/main/java/com/example/warehouseapp/ui/screens/admin/AdminPanel.kt
+     
+      1. package com.example.warehouseapp.ui.screens.admin
+      2. 
+      3. import androidx.compose.foundation.layout.*
+      4. import androidx.compose.foundation.lazy.LazyColumn
+      5. import androidx.compose.foundation.lazy.items
+      6. import androidx.compose.material3.*
+      7. import androidx.compose.runtime.*
+      8. import androidx.compose.ui.Alignment
+      9. import androidx.compose.ui.Modifier
+      10. import androidx.compose.ui.unit.dp
+      11. import androidx.navigation.NavController
+      12. import com.example.warehouseapp.api.RetrofitClient
+      13. import com.example.warehouseapp.data.UserResponse
+      14. import kotlinx.coroutines.launch
+      15. 
+      16. @OptIn(ExperimentalMaterial3Api::class)
+      17. @Composable
+      18. fun AdminPanelScreen(navController: NavController) {
+      19.     val scope = rememberCoroutineScope()
+      20. 
+      21.     var users by remember { mutableStateOf<List<UserResponse>>(emptyList()) }
+      22.     var isLoading by remember { mutableStateOf(true) }
+      23.     var errorMessage by remember { mutableStateOf<String?>(null) }
+      24.     var successMessage by remember { mutableStateOf<String?>(null) }
+      25.     var blockLoadingId by remember { mutableStateOf<Int?>(null) }
+      26.     var backupLoading by remember { mutableStateOf(false) }
+      27. 
+      28.     // fetchUsers suspending function returns Result<List<UserResponse>>
+      29.     suspend fun fetchUsers(): Result<List<UserResponse>> {
+      30.         return try {
+      31.             val response = RetrofitClient.apiService.getUsers()
+      32.             if (response.isSuccessful) {
+      33.                 Result.success(response.body() ?: emptyList())
+      34.             } else {
+      35.                 Result.failure(Exception("Failed to load users: ${response.code()}"))
+      36.             }
+      37.         } catch (e: Exception) {
+      38.             Result.failure(e)
+      39.         }
+      40.     }
+      41. 
+      42.     suspend fun blockUser(userId: Int): Result<Unit> {
+      43.         return try {
+      44.             val response = RetrofitClient.apiService.blockUser(userId)
+      45.             if (response.isSuccessful) {
+      46.                 Result.success(Unit)
+      47.             } else {
+      48.                 Result.failure(Exception("Failed to block user: ${response.code()}"))
+      49.             }
+      50.         } catch (e: Exception) {
+      51.             Result.failure(e)
+      52.         }
+      53.     }
+      54. 
+      55.     suspend fun unblockUser(userId: Int): Result<Unit> {
+      56.         return try {
+      57.             val response = RetrofitClient.apiService.unblockUser(userId)
+      58.             if (response.isSuccessful) {
+      59.                 Result.success(Unit)
+      60.             } else {
+      61.                 Result.failure(Exception("Failed to unblock user: ${response.code()}"))
+      62.             }
+      63.         } catch (e: Exception) {
+      64.             Result.failure(e)
+      65.         }
+      66.     }
+      67. 
+      68.     suspend fun downloadBackup(): Result<Unit> {
+      69.         return try {
+      70.             val response = RetrofitClient.apiService.downloadBackup()
+      71.             if (response.isSuccessful) {
+      72.                 // TODO: Handle file saving here
+      73.                 Result.success(Unit)
+      74.             } else {
+      75.                 Result.failure(Exception("Failed to download backup: ${response.code()}"))
+      76.             }
+      77.         } catch (e: Exception) {
+      78.             Result.failure(e)
+      79.         }
+      80.     }
+      81. 
+      82.     LaunchedEffect(Unit) {
+      83.         isLoading = true
+      84.         errorMessage = null
+      85.         fetchUsers().fold(
+      86.             onSuccess = {
+      87.                 users = it
+      88.                 isLoading = false
+      89.             },
+      90.             onFailure = {
+      91.                 errorMessage = it.localizedMessage ?: "Unknown error"
+      92.                 isLoading = false
+      93.             }
+      94.         )
+      95.     }
+      96. 
+      97.     fun refreshUsers() {
+      98.         scope.launch {
+      99.             isLoading = true
+      100.             errorMessage = null
+      101.             successMessage = null
+      102.             fetchUsers().fold(
+      103.                 onSuccess = {
+      104.                     users = it
+      105.                     successMessage = "Users refreshed"
+      106.                     isLoading = false
+      107.                 },
+      108.                 onFailure = {
+      109.                     errorMessage = it.localizedMessage ?: "Unknown error"
+      110.                     isLoading = false
+      111.                 }
+      112.             )
+      113.         }
+      114.     }
+      115. 
+      116.     fun onBlockUser(userId: Int) {
+      117.         scope.launch {
+      118.             blockLoadingId = userId
+      119.             errorMessage = null
+      120.             successMessage = null
+      121.             blockUser(userId).fold(
+      122.                 onSuccess = {
+      123.                     successMessage = "User blocked successfully"
+      124.                     refreshUsers()
+      125.                 },
+      126.                 onFailure = {
+      127.                     errorMessage = it.localizedMessage ?: "Failed to block user"
+      128.                 }
+      129.             )
+      130.             blockLoadingId = null
+      131.         }
+      132.     }
+      133. 
+      134.     fun onUnblockUser(userId: Int) {
+      135.         scope.launch {
+      136.             blockLoadingId = userId
+      137.             errorMessage = null
+      138.             successMessage = null
+      139.             unblockUser(userId).fold(
+      140.                 onSuccess = {
+      141.                     successMessage = "User unblocked successfully"
+      142.                     refreshUsers()
+      143.                 },
+      144.                 onFailure = {
+      145.                     errorMessage = it.localizedMessage ?: "Failed to unblock user"
+      146.                 }
+      147.             )
+      148.             blockLoadingId = null
+      149.         }
+      150.     }
+      151. 
+      152.     fun onDownloadBackup() {
+      153.         scope.launch {
+      154.             backupLoading = true
+      155.             errorMessage = null
+      156.             successMessage = null
+      157.             downloadBackup().fold(
+      158.                 onSuccess = {
+      159.                     successMessage = "Backup downloaded successfully"
+      160.                 },
+      161.                 onFailure = {
+      162.                     errorMessage = it.localizedMessage ?: "Failed to download backup"
+      163.                 }
+      164.             )
+      165.             backupLoading = false
+      166.         }
+      167.     }
+      168. 
+      169. 
+      170.     Scaffold(
+      171.         topBar = {
+      172.             TopAppBar(title = { Text("Admin Panel") })
+      173.         }
+      174.     ) { padding ->
+      175.         Column(
+      176.             modifier = Modifier
+      177.                 .fillMaxSize()
+      178.                 .padding(padding)
+      179.                 .padding(16.dp)
+      180.         ) {
+      181.             if (errorMessage != null) {
+      182.                 Text(errorMessage ?: "", color = MaterialTheme.colorScheme.error)
+      183.                 Spacer(Modifier.height(8.dp))
+      184.             }
+      185.             if (successMessage != null) {
+      186.                 Text(successMessage ?: "", color = MaterialTheme.colorScheme.primary)
+      187.                 Spacer(Modifier.height(8.dp))
+      188.             }
+      189. 
+      190.             Button(
+      191.                 onClick = { onDownloadBackup() },
+      192.                 enabled = !backupLoading,
+      193.                 modifier = Modifier.fillMaxWidth()
+      194.             ) {
+      195.                 if (backupLoading) {
+      196.                     CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+      197.                     Spacer(Modifier.width(8.dp))
+      198.                     Text("Downloading Backup...")
+      199.                 } else {
+      200.                     Text("Download Backup")
+      201.                 }
+      202.             }
+      203. 
+      204.             Spacer(Modifier.height(16.dp))
+      205. 
+      206.             if (isLoading) {
+      207.                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      208.                     CircularProgressIndicator()
+      209.                 }
+      210.             } else {
+      211.                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      212.                     items(users) { user ->
+      213.                         Card(
+      214.                             modifier = Modifier.fillMaxWidth(),
+      215.                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+      216.                         ) {
+      217.                             Row(
+      218.                                 modifier = Modifier
+      219.                                     .fillMaxWidth()
+      220.                                     .padding(16.dp),
+      221.                                 horizontalArrangement = Arrangement.SpaceBetween,
+      222.                                 verticalAlignment = Alignment.CenterVertically
+      223.                             ) {
+      224.                                 Column {
+      225.                                     Text("Username: ${user.username}", style = MaterialTheme.typography.titleMedium)
+      226.                                     Text("Email: ${user.email}", style = MaterialTheme.typography.bodyMedium)
+      227.                                     Text("Role: ${user.role}", style = MaterialTheme.typography.bodyMedium)
+      228.                                     Text(
+      229.                                         "Status: ${if (user.is_blocked == true) "Blocked" else "Active"}",
+      230.                                         style = MaterialTheme.typography.bodyMedium,
+      231.                                         color = if (user.is_blocked == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+      232.                                     )
+      233.                                 }
+      234.                                 Button(
+      235.                                     onClick = {
+      236.                                         if (user.is_blocked == true) {
+      237.                                             onUnblockUser(user.id)
+      238.                                         } else {
+      239.                                             onBlockUser(user.id)
+      240.                                         }
+      241.                                     },
+      242.                                     enabled = blockLoadingId != user.id
+      243.                                 ) {
+      244.                                     if (blockLoadingId == user.id) {
+      245.                                         CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+      246.                                         Spacer(Modifier.width(8.dp))
+      247.                                     }
+      248.                                     Text(if (user.is_blocked == true) "Unblock" else "Block")
+      249.                                 }
+      250.                             }
+      251.                         }
+      252.                     }
+      253.                 }
+      254.             }
+      255.         }
+      256.     }
+      257. };
+      
+     В.3 Резервне копіювання користувацьких даних.
+     GitHub репозиторій: https://github.com/NureIuklenchukRoman/apz-pzpi-22-2-iuklenchuk-roman/blob/main/Lab4/pzpi-22-2-iuklenchuk-roman-lab4/mobile/app/src/main/java/com/example/warehouseapp/ui/screens/admin/AdminPanel.kt
+     
+      1. package com.example.warehouseapp.ui.screens.admin
+      2. 
+      3. import androidx.compose.foundation.layout.*
+      4. import androidx.compose.foundation.lazy.LazyColumn
+      5. import androidx.compose.foundation.lazy.items
+      6. import androidx.compose.material3.*
+      7. import androidx.compose.runtime.*
+      8. import androidx.compose.ui.Alignment
+      9. import androidx.compose.ui.Modifier
+      10. import androidx.compose.ui.unit.dp
+      11. import androidx.navigation.NavController
+      12. import com.example.warehouseapp.api.RetrofitClient
+      13. import com.example.warehouseapp.data.UserResponse
+      14. import kotlinx.coroutines.launch
+      15. 
+      16. @OptIn(ExperimentalMaterial3Api::class)
+      17. @Composable
+      18. fun AdminPanelScreen(navController: NavController) {
+      19.     val scope = rememberCoroutineScope()
+      20. 
+      21.     var users by remember { mutableStateOf<List<UserResponse>>(emptyList()) }
+      22.     var isLoading by remember { mutableStateOf(true) }
+      23.     var errorMessage by remember { mutableStateOf<String?>(null) }
+      24.     var successMessage by remember { mutableStateOf<String?>(null) }
+      25.     var blockLoadingId by remember { mutableStateOf<Int?>(null) }
+      26.     var backupLoading by remember { mutableStateOf(false) }
+      27. 
+      28.     // fetchUsers suspending function returns Result<List<UserResponse>>
+      29.     suspend fun fetchUsers(): Result<List<UserResponse>> {
+      30.         return try {
+      31.             val response = RetrofitClient.apiService.getUsers()
+      32.             if (response.isSuccessful) {
+      33.                 Result.success(response.body() ?: emptyList())
+      34.             } else {
+      35.                 Result.failure(Exception("Failed to load users: ${response.code()}"))
+      36.             }
+      37.         } catch (e: Exception) {
+      38.             Result.failure(e)
+      39.         }
+      40.     }
+      41. 
+      42.     suspend fun blockUser(userId: Int): Result<Unit> {
+      43.         return try {
+      44.             val response = RetrofitClient.apiService.blockUser(userId)
+      45.             if (response.isSuccessful) {
+      46.                 Result.success(Unit)
+      47.             } else {
+      48.                 Result.failure(Exception("Failed to block user: ${response.code()}"))
+      49.             }
+      50.         } catch (e: Exception) {
+      51.             Result.failure(e)
+      52.         }
+      53.     }
+      54. 
+      55.     suspend fun unblockUser(userId: Int): Result<Unit> {
+      56.         return try {
+      57.             val response = RetrofitClient.apiService.unblockUser(userId)
+      58.             if (response.isSuccessful) {
+      59.                 Result.success(Unit)
+      60.             } else {
+      61.                 Result.failure(Exception("Failed to unblock user: ${response.code()}"))
+      62.             }
+      63.         } catch (e: Exception) {
+      64.             Result.failure(e)
+      65.         }
+      66.     }
+      67. 
+      68.     suspend fun downloadBackup(): Result<Unit> {
+      69.         return try {
+      70.             val response = RetrofitClient.apiService.downloadBackup()
+      71.             if (response.isSuccessful) {
+      72.                 // TODO: Handle file saving here
+      73.                 Result.success(Unit)
+      74.             } else {
+      75.                 Result.failure(Exception("Failed to download backup: ${response.code()}"))
+      76.             }
+      77.         } catch (e: Exception) {
+      78.             Result.failure(e)
+      79.         }
+      80.     }
+      81. 
+      82.     LaunchedEffect(Unit) {
+      83.         isLoading = true
+      84.         errorMessage = null
+      85.         fetchUsers().fold(
+      86.             onSuccess = {
+      87.                 users = it
+      88.                 isLoading = false
+      89.             },
+      90.             onFailure = {
+      91.                 errorMessage = it.localizedMessage ?: "Unknown error"
+      92.                 isLoading = false
+      93.             }
+      94.         )
+      95.     }
+      96. 
+      97.     fun refreshUsers() {
+      98.         scope.launch {
+      99.             isLoading = true
+      100.             errorMessage = null
+      101.             successMessage = null
+      102.             fetchUsers().fold(
+      103.                 onSuccess = {
+      104.                     users = it
+      105.                     successMessage = "Users refreshed"
+      106.                     isLoading = false
+      107.                 },
+      108.                 onFailure = {
+      109.                     errorMessage = it.localizedMessage ?: "Unknown error"
+      110.                     isLoading = false
+      111.                 }
+      112.             )
+      113.         }
+      114.     }
+      115. 
+      116.     fun onBlockUser(userId: Int) {
+      117.         scope.launch {
+      118.             blockLoadingId = userId
+      119.             errorMessage = null
+      120.             successMessage = null
+      121.             blockUser(userId).fold(
+      122.                 onSuccess = {
+      123.                     successMessage = "User blocked successfully"
+      124.                     refreshUsers()
+      125.                 },
+      126.                 onFailure = {
+      127.                     errorMessage = it.localizedMessage ?: "Failed to block user"
+      128.                 }
+      129.             )
+      130.             blockLoadingId = null
+      131.         }
+      132.     }
+      133. 
+      134.     fun onUnblockUser(userId: Int) {
+      135.         scope.launch {
+      136.             blockLoadingId = userId
+      137.             errorMessage = null
+      138.             successMessage = null
+      139.             unblockUser(userId).fold(
+      140.                 onSuccess = {
+      141.                     successMessage = "User unblocked successfully"
+      142.                     refreshUsers()
+      143.                 },
+      144.                 onFailure = {
+      145.                     errorMessage = it.localizedMessage ?: "Failed to unblock user"
+      146.                 }
+      147.             )
+      148.             blockLoadingId = null
+      149.         }
+      150.     }
+      151. 
+      152.     fun onDownloadBackup() {
+      153.         scope.launch {
+      154.             backupLoading = true
+      155.             errorMessage = null
+      156.             successMessage = null
+      157.             downloadBackup().fold(
+      158.                 onSuccess = {
+      159.                     successMessage = "Backup downloaded successfully"
+      160.                 },
+      161.                 onFailure = {
+      162.                     errorMessage = it.localizedMessage ?: "Failed to download backup"
+      163.                 }
+      164.             )
+      165.             backupLoading = false
+      166.         }
+      167.     }
+      168. 
+      169. 
+      170.     Scaffold(
+      171.         topBar = {
+      172.             TopAppBar(title = { Text("Admin Panel") })
+      173.         }
+      174.     ) { padding ->
+      175.         Column(
+      176.             modifier = Modifier
+      177.                 .fillMaxSize()
+      178.                 .padding(padding)
+      179.                 .padding(16.dp)
+      180.         ) {
+      181.             if (errorMessage != null) {
+      182.                 Text(errorMessage ?: "", color = MaterialTheme.colorScheme.error)
+      183.                 Spacer(Modifier.height(8.dp))
+      184.             }
+      185.             if (successMessage != null) {
+      186.                 Text(successMessage ?: "", color = MaterialTheme.colorScheme.primary)
+      187.                 Spacer(Modifier.height(8.dp))
+      188.             }
+      189. 
+      190.             Button(
+      191.                 onClick = { onDownloadBackup() },
+      192.                 enabled = !backupLoading,
+      193.                 modifier = Modifier.fillMaxWidth()
+      194.             ) {
+      195.                 if (backupLoading) {
+      196.                     CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+      197.                     Spacer(Modifier.width(8.dp))
+      198.                     Text("Downloading Backup...")
+      199.                 } else {
+      200.                     Text("Download Backup")
+      201.                 }
+      202.             }
+      203. 
+      204.             Spacer(Modifier.height(16.dp))
+      205. 
+      206.             if (isLoading) {
+      207.                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+      208.                     CircularProgressIndicator()
+      209.                 }
+      210.             } else {
+      211.                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+      212.                     items(users) { user ->
+      213.                         Card(
+      214.                             modifier = Modifier.fillMaxWidth(),
+      215.                             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+      216.                         ) {
+      217.                             Row(
+      218.                                 modifier = Modifier
+      219.                                     .fillMaxWidth()
+      220.                                     .padding(16.dp),
+      221.                                 horizontalArrangement = Arrangement.SpaceBetween,
+      222.                                 verticalAlignment = Alignment.CenterVertically
+      223.                             ) {
+      224.                                 Column {
+      225.                                     Text("Username: ${user.username}", style = MaterialTheme.typography.titleMedium)
+      226.                                     Text("Email: ${user.email}", style = MaterialTheme.typography.bodyMedium)
+      227.                                     Text("Role: ${user.role}", style = MaterialTheme.typography.bodyMedium)
+      228.                                     Text(
+      229.                                         "Status: ${if (user.is_blocked == true) "Blocked" else "Active"}",
+      230.                                         style = MaterialTheme.typography.bodyMedium,
+      231.                                         color = if (user.is_blocked == true) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+      232.                                     )
+      233.                                 }
+      234.                                 Button(
+      235.                                     onClick = {
+      236.                                         if (user.is_blocked == true) {
+      237.                                             onUnblockUser(user.id)
+      238.                                         } else {
+      239.                                             onBlockUser(user.id)
+      240.                                         }
+      241.                                     },
+      242.                                     enabled = blockLoadingId != user.id
+      243.                                 ) {
+      244.                                     if (blockLoadingId == user.id) {
+      245.                                         CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+      246.                                         Spacer(Modifier.width(8.dp))
+      247.                                     }
+      248.                                     Text(if (user.is_blocked == true) "Unblock" else "Block")
+      249.                                 }
+      250.                             }
+      251.                         }
+      252.                     }
+      253.                 }
+      254.             }
+      255.         }
+      256.     }
+      257. };
