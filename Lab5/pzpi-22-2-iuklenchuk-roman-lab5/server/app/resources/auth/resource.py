@@ -90,7 +90,7 @@ async def login(db: AsyncSession = Depends(get_db), form_data: OAuth2PasswordReq
         expires_delta=timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     )
 
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer", "role": user.role}
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 @auth_router.post("/refresh-token", response_model=TokenWithRefreshToken)
